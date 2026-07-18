@@ -1,10 +1,58 @@
 <div class="card card-body shadow-sm mb-4 bg-light border-0">
     @auth
+
+    <!-- 🌟 RECUPERO DELLO STATO ATTUALE DAL DB -->
+    @php
+    $currentTracker = \App\Models\EpisodeTracker::where('user_id', Auth::id())
+    ->where('mal_id', $malId)
+    ->first();
+    $currentStatus = $currentTracker ? $currentTracker->status : 'none';
+    @endphp
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0 text-secondary">🎬 Selezione Episodi Visti</h5>
         <span class="badge bg-primary px-3 py-2 fs-6 rounded-pill">
             {{ count($watchedEpisodesList) }} / {{ $totalEpisodes > 0 ? $totalEpisodes : '?' }} Visti
         </span>
+    </div>
+    <!-- 🌟 NUOVO DROPDOWN PER ABBANDONARE O CAMBIARE STATO MANUALMENTE -->
+    <div class="d-flex align-items-center gap-2 mb-3 bg-white p-2 rounded shadow-sm">
+        <span class="small fw-bold text-muted text-uppercase ms-1">Stato Visione:</span>
+        <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle fw-semibold" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @if($currentStatus === 'watching') 📺 In Corso
+                @elseif($currentStatus === 'plan_to_watch') ⏳ Da Guardare
+                @elseif($currentStatus === 'completed') 🎉 Completato
+                @elseif($currentStatus === 'dropped') ❌ Abbandonato
+                @else ⚪ Non Tracciato
+                @endif
+            </button>
+            <ul class="dropdown-menu shadow-sm">
+                <li>
+                    <button wire:click="changeStatus('watching')" class="dropdown-item small d-flex align-items-center gap-2 {{ $currentStatus === 'watching' ? 'active' : '' }}">
+                        📺 In Corso
+                    </button>
+                </li>
+                <li>
+                    <button wire:click="changeStatus('plan_to_watch')" class="dropdown-item small d-flex align-items-center gap-2 {{ $currentStatus === 'plan_to_watch' ? 'active' : '' }}">
+                        ⏳ Da Guardare
+                    </button>
+                </li>
+                <li>
+                    <button wire:click="changeStatus('completed')" class="dropdown-item small d-flex align-items-center gap-2 {{ $currentStatus === 'completed' ? 'active' : '' }}">
+                        🎉 Completato
+                    </button>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <button wire:click="changeStatus('dropped')" class="dropdown-item small text-danger d-flex align-items-center gap-2 {{ $currentStatus === 'dropped' ? 'bg-danger text-white' : '' }}">
+                        ❌ Abbandona Serie
+                    </button>
+                </li>
+            </ul>
+        </div>
     </div>
     <!-- Contenitore della Griglia con scroll se ci sono tantissimi episodi -->
     <div class="d-flex flex-wrap gap-2 overflow-auto p-1" style="max-height: 250px;">
@@ -17,14 +65,13 @@
             wire:click="toggleEpisode({{ $i }})"
             class="btn btn-sm text-center fw-semibold d-flex align-items-center justify-content-center shadow-sm transition-all"
             style="width: 42px; height: 42px; min-width: 42px; font-size: 0.85rem; border-radius: 8px; 
-                               {{ $isWatched ? 'background-color: #0d6efd; color: white; border: none;' : 'background-color: #ffffff; color: #495057; border: 1px solid #dee2e6;' }}"
+                           {{ $isWatched ? 'background-color: #0d6efd; color: white; border: none;' : 'background-color: #ffffff; color: #495057; border: 1px solid #dee2e6;' }}"
             title="{{ $isWatched ? 'Segna come non visto' : 'Segna come visto' }}">
             {{ $i }}
             </button>
             @endfor
             @else
-            <!-- Caso speciale: l'API non ha ancora un numero totale di episodi (es. anime in corso come One Piece) -->
-            <!-- Mostriamo gli episodi già visti + un pulsante per aggiungerne uno nuovo libero -->
+            <!-- Caso speciale: l'API non ha ancora un numero totale di episodi -->
             @foreach($watchedEpisodesList as $ep)
             <button
                 wire:click="toggleEpisode({{ $ep }})"

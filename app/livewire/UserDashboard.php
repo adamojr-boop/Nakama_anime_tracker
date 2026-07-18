@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Http;
 
 class UserDashboard extends Component
 {
+    protected $listeners = ['listUpdated' => 'loadAnimeList'];
+
     public $animeList = [];
-    public $currentFilter = 'watching'; // Filtro iniziale: mostriamo gli anime in corso
-    // 🌟 Gestisce il cambio di tab e ricarica i dati corretti
+    public $currentFilter = 'watching';
+
     public function setFilter($filter)
     {
         $this->currentFilter = $filter;
@@ -22,30 +24,28 @@ class UserDashboard extends Component
     {
         $this->loadAnimeList();
     }
-    // 🌟 Metodo UNIFICATO
+
     public function loadAnimeList()
     {
         if (!Auth::check()) {
             return redirect()->route('login');
         }
-        // Se siamo nella tab di gestione liste, svuotiamo la lista anime ed evitiamo chiamate API inutili
+
         if ($this->currentFilter === 'my-lists') {
             $this->animeList = [];
             return;
         }
-        // 1. Recuperiamo i record dal database locale filtrati per lo stato scelto
+
         $trackedAnime = EpisodeTracker::where('user_id', Auth::id())
             ->where('status', $this->currentFilter)
             ->latest('updated_at')
             ->get();
 
         $enrichedList = [];
-        // 2. Per ogni anime tracciato nel DB, recuperiamo i dettagli grafici dall'API
+
         foreach ($trackedAnime as $track) {
             try {
-                // Tentativo principale con Jikan
                 $response = Http::timeout(2)->get("https://api.jikan.moe/v4/anime/{$track->mal_id}");
-
                 if ($response->successful()) {
                     $apiData = $response->json()['data'];
                     $enrichedList[] = [
@@ -59,7 +59,7 @@ class UserDashboard extends Component
                 }
                 throw new \Exception();
             } catch (\Exception $e) {
-                // Fallback su Kitsu se Jikan è lento/in errore
+                // 🌟 FALLBACK 1: KITSU API
                 try {
                     $kitsuResponse = Http::timeout(2)->get("https://kitsu.io/api/edge/anime/{$track->mal_id}");
                     if ($kitsuResponse->successful()) {
@@ -72,15 +72,17 @@ class UserDashboard extends Component
                                 'title' => $item['attributes']['canonicalTitle'],
                                 'image' => $item['attributes']['posterImage']['medium'] ?? 'https://via.placeholder.com/150x210',
                             ];
+                            continue;
                         }
                     }
+                    throw new \Exception();
                 } catch (\Exception $kitsuEx) {
-                    // Se entrambi i server falliscono, mostriamo comunque la riga senza rompere la pagina
+                    // 🌟 FALLBACK 2: OFFLINE (Se le API sono entrambe giù, mostra comunque l'anime!)
                     $enrichedList[] = [
                         'mal_id' => $track->mal_id,
                         'watched_episodes' => $track->watched_episodes,
                         'total_episodes' => '?',
-                        'title' => "Anime #" . $track->mal_id . " (Dettagli offline)",
+                        'title' => "Anime ID #{$track->mal_id} (Dati non caricati)",
                         'image' => 'https://via.placeholder.com/150x210',
                     ];
                 }
@@ -92,6 +94,8 @@ class UserDashboard extends Component
 
     public function render()
     {
+        $this->loadAnimeList();
+
         return view('livewire.user-dashboard')
             ->layout('components.layouts.app');
     }
