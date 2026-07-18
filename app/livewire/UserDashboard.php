@@ -11,6 +11,7 @@ class UserDashboard extends Component
 {
     public $animeList = [];
     public $currentFilter = 'watching'; // Filtro iniziale: mostriamo gli anime in corso
+    // 🌟 Gestisce il cambio di tab e ricarica i dati corretti
     public function setFilter($filter)
     {
         $this->currentFilter = $filter;
@@ -21,13 +22,18 @@ class UserDashboard extends Component
     {
         $this->loadAnimeList();
     }
-
+    // 🌟 Metodo UNIFICATO
     public function loadAnimeList()
     {
         if (!Auth::check()) {
             return redirect()->route('login');
         }
-        // 1. Recuperiamo i record dal nostro database locale filtrati per lo stato scelto
+        // Se siamo nella tab di gestione liste, svuotiamo la lista anime ed evitiamo chiamate API inutili
+        if ($this->currentFilter === 'my-lists') {
+            $this->animeList = [];
+            return;
+        }
+        // 1. Recuperiamo i record dal database locale filtrati per lo stato scelto
         $trackedAnime = EpisodeTracker::where('user_id', Auth::id())
             ->where('status', $this->currentFilter)
             ->latest('updated_at')
@@ -36,13 +42,14 @@ class UserDashboard extends Component
         $enrichedList = [];
         // 2. Per ogni anime tracciato nel DB, recuperiamo i dettagli grafici dall'API
         foreach ($trackedAnime as $track) {
-            try {// Tentativo principale con Jikan
+            try {
+                // Tentativo principale con Jikan
                 $response = Http::timeout(2)->get("https://api.jikan.moe/v4/anime/{$track->mal_id}");
 
                 if ($response->successful()) {
                     $apiData = $response->json()['data'];
                     $enrichedList[] = [
-                        'mal_id' => $track->malId ?? $track->mal_id,
+                        'mal_id' => $track->mal_id,
                         'watched_episodes' => $track->watched_episodes,
                         'total_episodes' => $apiData['episodes'] ?? '?',
                         'title' => $apiData['title'],
@@ -67,7 +74,8 @@ class UserDashboard extends Component
                             ];
                         }
                     }
-                } catch (\Exception $kitsuEx) { // Se entrambi i server falliscono, mostriamo comunque la riga senza rompere la pagina
+                } catch (\Exception $kitsuEx) {
+                    // Se entrambi i server falliscono, mostriamo comunque la riga senza rompere la pagina
                     $enrichedList[] = [
                         'mal_id' => $track->mal_id,
                         'watched_episodes' => $track->watched_episodes,

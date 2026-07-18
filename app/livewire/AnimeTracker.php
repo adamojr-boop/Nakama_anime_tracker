@@ -10,52 +10,60 @@ class AnimeTracker extends Component
 {
     public $malId;
     public $totalEpisodes;
-    public $watchedEpisodes = 0;
+    public $watchedEpisodesList = []; // Array che conterrà i numeri degli episodi visti
 
     public function mount($malId, $totalEpisodes)
     {
         $this->malId = $malId;
-        // Se l'API restituisce '?' o nullo (es. anime in corso), impostiamo un numero altissimo
-        $this->totalEpisodes = is_numeric($totalEpisodes) ? (int)$totalEpisodes : 9999;
-        // Se l'utente è loggato, recuperiamo il suo progresso attuale se esiste
+        // Se l'anime è in corso o non ha un numero di episodi definito dall'API
+        $this->totalEpisodes = is_numeric($totalEpisodes) ? (int)$totalEpisodes : 0;
+
         if (Auth::check()) {
             $tracker = EpisodeTracker::where('user_id', Auth::id())
                 ->where('mal_id', $this->malId)
                 ->first();
 
             if ($tracker) {
-                $this->watchedEpisodes = $tracker->watched_episodes;
+                // Carichiamo la lista degli episodi visti salvata nel DB (se vuota, mettiamo un array vuoto)
+                $this->watchedEpisodesList = $tracker->watched_details ?? [];
+                // Compatibilità: se l'utente aveva usato il vecchio tracker lineare, convertiamo i vecchi dati al volo
+                if (empty($this->watchedEpisodesList) && $tracker->watched_episodes > 0) {
+                    $this->watchedEpisodesList = range(1, $tracker->watched_episodes);
+                }
             }
         }
     }
 
-    public function increment()
+    public function toggleEpisode($episodeNumber)
     {
         if (!Auth::check()) return;
 
-        if ($this->watchedEpisodes < $this->totalEpisodes) {
-            $this->watchedEpisodes++;
-            $this->updateDatabase();
+        // Se l'episodio è già presente nella lista, lo rimuoviamo (l'utente lo sta deselezionando)
+        if (in_array($episodeNumber, $this->watchedEpisodesList)) {
+            $this->watchedEpisodesList = array_values(array_diff($this->watchedEpisodesList, [$episodeNumber]));
+        } else {
+            // Altrimenti lo aggiungiamo
+            $this->watchedEpisodesList[] = $episodeNumber;
+            sort($this->watchedEpisodesList); // Manteniamo l'array ordinato numericamente
         }
-    }
 
-    public function decrement()
-    {
-        if (!Auth::check()) return;
-
-        if ($this->watchedEpisodes > 0) {
-            $this->watchedEpisodes--;
-            $this->updateDatabase();
-        }
+        $this->updateDatabase();
     }
 
     private function updateDatabase()
-    { // Determina lo status in base agli episodi visti
-        $status = ($this->watchedEpisodes == $this->totalEpisodes) ? 'completed' : 'watching';
-        // updateOrCreate fa tutto da solo: se la riga c'è la aggiorna, altrimenti la crea
+    {
+        $count = count($this->watchedEpisodesList);
+
+        // Determiniamo lo stato: se ha visto tutti gli episodi (e l'anime ha un numero totale noto), è completato
+        $status = ($this->totalEpisodes > 0 && $count === $this->totalEpisodes) ? 'completed' : 'watching';
+
         EpisodeTracker::updateOrCreate(
             ['user_id' => Auth::id(), 'mal_id' => $this->malId],
-            ['watched_episodes' => $this->watchedEpisodes, 'status' => $status]
+            [
+                'watched_episodes' => $count, // Manteniamo aggiornato il conteggio totale (per la Dashboard!)
+                'watched_details' => $this->watchedEpisodesList, // Salviamo la griglia degli episodi specifici
+                'status' => $status
+            ]
         );
     }
 

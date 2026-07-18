@@ -25,7 +25,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('dashboard*') ? 'active fw-bold text-primary' : '' }}" href="{{ route('dashboard') }}">La mia Lista</a>
+                    <a class="nav-link {{ request()->is('dashboard*') ? 'active fw-bold text-primary' : '' }}" href="{{ route('dashboard') }}">La mie Liste</a>
                 </li>
 
                 <!-- Nome Utente (Disattivato come link, serve solo da indicatore) -->
