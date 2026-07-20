@@ -9,7 +9,6 @@
         <div class="container mt-4">
 
             <livewire:user-stats-widget />
-
             <!-- Menu Filtri (Assicurati che i valori siano esattamente questi) -->
             <ul class="nav nav-pills mb-4 bg-light p-2 rounded-3 shadow-sm d-flex flex-wrap gap-1">
                 <li class="nav-item">
@@ -35,23 +34,58 @@
             <div class="row g-3">
                 @forelse($animeList as $anime)
                 <div class="col-md-3 col-sm-6" wire:key="anime-{{ $anime['mal_id'] }}">
-                    <a href="{{ route('anime.show', $anime['mal_id']) }}" class="text-decoration-none text-dark d-block h-100">
-                        <div class="card h-100 shadow-sm border-0">
+                    <div class="card h-100 shadow-sm border-0 position-relative">
+                        <a href="{{ route('anime.show', $anime['mal_id']) }}" class="text-decoration-none text-dark">
                             <img src="{{ $anime['image'] }}" class="card-img-top" style="height: 250px; object-fit: cover;">
+
                             <div class="card-body p-2 text-center">
                                 <h6 class="fw-bold text-truncate mb-1">{{ $anime['title'] }}</h6>
-                                <span class="badge bg-secondary small">Ep. {{ $anime['watched_episodes'] }} / {{ $anime['total_episodes'] }}</span>
+
+                                @php
+                                $total = $anime['total_episodes'] ?? 0;
+                                $watched = $anime['watched_episodes'] ?? 0;
+                                $duration = $anime['episode_duration'] ?? 24;
+                                $remainingEp = $total > 0 ? max(0, $total - $watched) : 0;
+                                $remainingMinutes = $remainingEp * $duration;
+                                $remHours = floor($remainingMinutes / 60);
+                                $remMins = $remainingMinutes % 60;
+                                $percent = $total > 0 ? round(($watched / $total) * 100) : 0;
+                                @endphp
+
+                                <div class="d-flex justify-content-between align-items-center small mb-1">
+                                    <span class="badge bg-secondary">Ep. {{ $watched }} / {{ $total > 0 ? $total : '?' }}</span>
+                                    <span class="fw-semibold text-primary" style="font-size: 0.75rem;">{{ $percent }}%</span>
+                                </div>
+
+                                <!-- Progress bar completamento -->
+                                <div class="progress mb-2" style="height: 4px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $percent }}%;"></div>
+                                </div>
+
+                                <!-- 🌟 Indicatore dinamico del tempo rimanente -->
+                                @if($currentFilter === 'watching' && $remainingEp > 0)
+                                <div class="text-muted text-xs" style="font-size: 0.75rem;">
+                                    ⏳ Rimangono: <strong>{{ $remHours > 0 ? $remHours.'h ' : '' }}{{ $remMins }}m</strong>
+                                </div>
+                                @elseif($currentFilter === 'completed')
+                                <div class="text-success text-xs fw-semibold" style="font-size: 0.75rem;">
+                                    🎉 Serie Completata!
+                                </div>
+                                @endif
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
                 @empty
                 <div class="col-12 text-center py-4">
                     <p class="text-muted">💨 Nessun anime trovato in questa categoria.</p>
                 </div>
                 @endforelse
+                <div class="col-12 text-center py-4">
+                    <p class="text-muted">💨 Nessun anime trovato in questa categoria.</p>
+                </div>
+                @endforelse
             </div>
-            @endif
         </div>
     </div>
 </div>

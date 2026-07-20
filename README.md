@@ -2,8 +2,6 @@
 
 2. GAMIFICATION E STATISTICHE
 
-• Countdown Tempo Rimasto: Indicatore dinamico basato sul minutaggio o numero di episodi/
-pagine rimanenti per completare una specifica serie, anime o saga cinematografica.
 • Sistema di Badge e Obiettivi: Sblocco automatizzato di trofei e riconoscimenti visivi sul profilo al
 completamento di azioni specifiche: 
 • Area Social: Raggiungimento di soglie critiche di commenti pubblicati.

@@ -165,4 +165,33 @@ class AnimeTracker extends Component
     {
         return view('components.anime.anime-tracker');
     }
+    // 🌟 NUOVO METODO: Calcola il tempo rimanente per completare l'anime
+    public function getRemainingTimeProperty()
+    {
+        if ($this->totalEpisodes <= 0) {
+            return null; // Episodi totali sconosciuti
+        }
+
+        $watchedCount = count($this->watchedEpisodesList);
+        $remainingEpisodes = $this->totalEpisodes - $watchedCount;
+
+        if ($remainingEpisodes <= 0) {
+            return ['episodes' => 0, 'formatted' => 'Completato!'];
+        }
+
+        $totalMinutes = $remainingEpisodes * $this->episodeDuration;
+        $hours = floor($totalMinutes / 60);
+        $minutes = $totalMinutes % 60;
+
+        $formatted = '';
+        if ($hours > 0) {
+            $formatted .= "{$hours}h ";
+        }
+        $formatted .= "{$minutes}m";
+
+        return [
+            'episodes' => $remainingEpisodes,
+            'formatted' => $formatted
+        ];
+    }
 }

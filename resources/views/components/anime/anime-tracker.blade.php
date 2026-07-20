@@ -1,6 +1,5 @@
 <div id="anime-tracker" class="card card-body shadow-sm mb-4 bg-light border-0">
     @auth
-
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0 text-secondary">🎬 Selezione Episodi Visti</h5>
         <div class="d-flex align-items-center gap-2">
@@ -9,6 +8,13 @@
                 🔄 Rewatch #{{ $rewatchCount }}
             </span>
             @endif
+            <!-- 🌟 NUOVO BADGE: Countdown Tempo Rimasto -->
+            @if($this->remainingTime && $currentStatus === 'watching')
+            <span class="badge bg-info text-dark px-3 py-2 fs-6 rounded-pill shadow-sm" title="Tempo stimato per finire la serie">
+                ⏳ Mancano {{ $this->remainingTime['episodes'] }} ep ({{ $this->remainingTime['formatted'] }})
+            </span>
+            @endif
+
             <span class="badge bg-primary px-3 py-2 fs-6 rounded-pill">
                 {{ count($watchedEpisodesList) }} / {{ $totalEpisodes > 0 ? $totalEpisodes : '?' }} Visti
             </span>
