@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\User;
+use App\Models\Badge;
+use Illuminate\Support\Facades\Log;
+
+class BadgeService
+{/**
+     * Tenta di sbloccare un badge per l'utente dato il suo codice.
+     */
+    public function unlockBadge(User $user, string $badgeCode): bool
+    {
+        $badge = Badge::where('code', $badgeCode)->first();
+
+        if (!$badge) {
+            return false;
+        }
+        // Verifica se l'utente possiede già questo badge
+        if (!$user->badges()->where('badge_id', $badge->id)->exists()) {
+            $user->badges()->attach($badge->id, ['unlocked_at' => now()]);
+            // Possiamo loggare lo sblocco o emettere un evento
+            Log::info("🏆 Badge Sbloccato! [{$badge->name}] per l'utente {$user->id}");
+            return true; // Sbloccato con successo!
+        }
+
+        return false; // Già posseduto
+    }
+    /**
+     * Controlla i badge dell'Area Social (basato sul numero di commenti pubblicati)
+     */
+    public function checkSocialBadges(User $user, int $commentsCount): array
+    {
+        $unlocked = [];
+
+        if ($commentsCount >= 1) {
+            if ($this->unlockBadge($user, 'social_first_comment')) {
+                $unlocked[] = '💬 Primo Salotto';
+            }
+        }
+        if ($commentsCount >= 10) {
+            if ($this->unlockBadge($user, 'social_talkative')) {
+                $unlocked[] = '🗣️ Chiacchierone';
+            }
+        }
+        if ($commentsCount >= 50) {
+            if ($this->unlockBadge($user, 'social_guru')) {
+                $unlocked[] = '🔥 Pillar of Community';
+            }
+        }
+
+        return $unlocked;
+    }/**
+     * Controlla i badge dell'Area Hype (visti entro 24h dal rilascio)
+     */
+    public function checkHypeBadge(User $user, $airingTimestamp = null): bool
+    {
+        // Se non viene fornito un orario di trasmissione, usiamo il timestamp corrente per il test
+        $releaseTime = $airingTimestamp ? \Carbon\Carbon::parse($airingTimestamp) : now();
+        $hoursDiff = now()->diffInHours($releaseTime);
+        // Se l'episodio viene spuntato entro 24 ore dal rilascio
+        if ($hoursDiff <= 24) {
+            $unlocked = $this->unlockBadge($user, 'hype_first_checkin');
+            // Possiamo anche tracciare il totale dei check-in veloci per sbloccare 'hype_master' (10 check-in)
+            // (Aggiungeremo un contatore dedicato se necessario)
+            return $unlocked;
+        }
+
+        return false;
+    }
+}

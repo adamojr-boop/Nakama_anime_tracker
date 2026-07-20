@@ -2,9 +2,10 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Review;
+use App\Services\BadgeService;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class AnimeReviews extends Component
 {
@@ -31,17 +32,25 @@ class AnimeReviews extends Component
 
         $this->validate();
 
-        // 🌟 CORREZIONE: Cambiato 'anime_id' in 'mal_id' per combaciare con la tua colonna su SQLite
         Review::create([
             'user_id' => Auth::id(),
-            'mal_id' => $this->animeId,
+            'mal_id'  => $this->animeId,
             'comment' => $this->comment,
-            'rating' => $this->rating,
+            'rating'  => $this->rating,
         ]);
 
         $this->reset('comment');
 
         session()->flash('message', 'Recensione pubblicata con successo!');
+        // 🌟 CONTEGGIO CORRETTO SU REVIEWS
+        $commentsCount = Review::where('user_id', Auth::id())->count();
+        // Controllo sblocco trofei Social
+        $badgeService = app(BadgeService::class);
+        $newBadges = $badgeService->checkSocialBadges(Auth::user(), $commentsCount);
+
+        if (!empty($newBadges)) {
+            session()->flash('badge_unlocked', '🏆 Nuovo Trofeo Social Sbloccato: ' . implode(', ', $newBadges));
+        }
     }
 
     public function render()

@@ -3,6 +3,12 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0 text-secondary">🎬 Selezione Episodi Visti</h5>
         <div class="d-flex align-items-center gap-2">
+            @if (session()->has('badge_unlocked'))
+            <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm rounded-3 mb-3 fw-bold d-flex align-items-center gap-2" role="alert">
+                <span>🎉</span> {{ session('badge_unlocked') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
             @if($rewatchCount > 0)
             <span class="badge bg-warning text-dark px-3 py-2 fs-6 rounded-pill shadow-sm" title="Quante volte hai rivisto questo anime">
                 🔄 Rewatch #{{ $rewatchCount }}

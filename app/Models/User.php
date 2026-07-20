@@ -67,4 +67,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Review::class);
     }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'user_badge')
+            ->withPivot('unlocked_at')
+            ->withTimestamps();
+    }
 }

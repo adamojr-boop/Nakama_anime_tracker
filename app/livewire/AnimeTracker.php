@@ -2,10 +2,11 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use App\Models\EpisodeTracker;
 use App\Models\CustomList;
+use App\Models\EpisodeTracker;
+use App\Services\BadgeService;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class AnimeTracker extends Component
 {
@@ -76,23 +77,31 @@ class AnimeTracker extends Component
     {
         if (!Auth::check()) return;
 
-        if (in_array($episodeNumber, $this->watchedEpisodesList)) {
-            $this->watchedEpisodesList = array_values(array_diff($this->watchedEpisodesList, [$episodeNumber]));
-        } else {
+        $isAdding = !in_array($episodeNumber, $this->watchedEpisodesList);
+
+        if ($isAdding) {
             $this->watchedEpisodesList[] = $episodeNumber;
-            sort($this->watchedEpisodesList);
+
+            // 🌟 CHECK BADGE HYPE: Quando segna un nuovo episodio come visto
+            $badgeService = app(BadgeService::class);
+            $unlocked = $badgeService->checkHypeBadge(Auth::user());
+
+            if ($unlocked) {
+                session()->flash('badge_unlocked', '🏆 Trofeo Sbloccato: Simulcast Warrior!');
+            }
+        } else {
+            $this->watchedEpisodesList = array_diff($this->watchedEpisodesList, [$episodeNumber]);
         }
 
+        sort($this->watchedEpisodesList);
         $this->updateDatabase();
     }
     // 🌟 Nuova funzione per forzare lo stato (es. Abbandonato o Da Guardare) manualmente
     public function changeStatus($newStatus)
     {
         if (!Auth::check()) return;
-
         // Assicurati che 'dropped' sia presente in questo array di validazione
         if (!in_array($newStatus, ['watching', 'plan_to_watch', 'completed', 'dropped'])) return;
-
         // Aggiorna o crea il record sul database impostando lo status corretto
         \App\Models\EpisodeTracker::updateOrCreate(
             ['user_id' => Auth::id(), 'mal_id' => $this->malId],
@@ -102,7 +111,6 @@ class AnimeTracker extends Component
                 'status' => $newStatus // <-- Deve salvare il valore ricevuto ('dropped')
             ]
         );
-
         // Esegui la pulizia dalle liste
         if ($newStatus === 'dropped') {
             $this->cleanAnimeFromAllLists();

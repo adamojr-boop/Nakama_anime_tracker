@@ -2,11 +2,7 @@
 
 2. GAMIFICATION E STATISTICHE
 
-• Sistema di Badge e Obiettivi: Sblocco automatizzato di trofei e riconoscimenti visivi sul profilo al
-completamento di azioni specifiche: 
-• Area Social: Raggiungimento di soglie critiche di commenti pubblicati.
-• Area Hype: Visione e check-in di un episodio entro le 24 ore dal rilascio ufficiale.
-Specifiche Tracker Multimediale & Community 1
+Specifiche Tracker Multimediale & Community
 • Area Binge-watching: Visione consecutiva di un numero prefissato di episodi nella stessa
 sessione temporale. 
 • Quiz e Trivia: Modulo interattivo integrato per la generazione di quiz su serie TV e anime, mirato a
