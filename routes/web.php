@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CustomListController;
 use App\Livewire\ShowAnime;
 use App\Livewire\UserDashboard;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'livewire.home')->name('home');
 Route::get('/anime/{id}', ShowAnime::class)->name('anime.show');
+Route::get('/lists/{id}', [CustomListController::class, 'show'])->name('lists.show');
 
 // Rotte per gli ospiti (chi non è loggato)
 Route::middleware('guest')->group(function () {

@@ -9,32 +9,68 @@ use Illuminate\Support\Facades\Auth;
 
 class AnimeTracker extends Component
 {
-    
-public $malId;
-public $totalEpisodes;
-public $watchedEpisodesList = [];
-public $currentStatus = 'none';
+
+    public $malId;
+    public $totalEpisodes;
+    public $watchedEpisodesList = [];
+    public $currentStatus = 'none';
+    public $rewatchCount = 0;
+    public $episodeDuration = 24;
 
     public function mount($malId, $totalEpisodes)
-{
-    $this->malId = $malId;
-    $this->totalEpisodes = is_numeric($totalEpisodes) ? (int)$totalEpisodes : 0;
+    {
+        $this->malId = $malId;
+        $this->totalEpisodes = is_numeric($totalEpisodes) ? (int)$totalEpisodes : 0;
 
-    if (Auth::check()) {
+        if (Auth::check()) {
+            $tracker = EpisodeTracker::where('user_id', Auth::id())
+                ->where('mal_id', $this->malId)
+                ->first();
+
+            if ($tracker) {
+                $this->watchedEpisodesList = $tracker->watched_details ?? [];
+                $this->currentStatus = $tracker->status ?? 'none'; // 🌟 Imposta lo stato iniziale
+                $this->rewatchCount = $tracker->rewatch_count ?? 0;
+                $this->episodeDuration = $tracker->episode_duration ?? 24;
+
+                if (empty($this->watchedEpisodesList) && $tracker->watched_episodes > 0) {
+                    $this->watchedEpisodesList = range(1, $tracker->watched_episodes);
+                }
+            }
+        }
+    }
+    // 🌟 NUOVO METODO: Avvia il Rewatch della serie
+    public function startRewatch()
+    {
+        if (!Auth::check()) return;
+
         $tracker = EpisodeTracker::where('user_id', Auth::id())
             ->where('mal_id', $this->malId)
             ->first();
 
-        if ($tracker) {
-            $this->watchedEpisodesList = $tracker->watched_details ?? [];
-            $this->currentStatus = $tracker->status ?? 'none'; // 🌟 Imposta lo stato iniziale
-            
-            if (empty($this->watchedEpisodesList) && $tracker->watched_episodes > 0) {
-                $this->watchedEpisodesList = range(1, $tracker->watched_episodes);
-            }
+        if ($tracker && $tracker->status === 'completed') {
+            // Incrementiamo i rewatch e aggiungiamo gli episodi completati al totale storico
+            $newRewatchCount = ($tracker->rewatch_count ?? 0) + 1;
+            $previousRewatchedTotal = ($tracker->total_rewatched_episodes ?? 0) + count($this->watchedEpisodesList);
+
+            // Resettiamo gli episodi per la nuova visione e impostiamo lo stato su 'watching'
+            $this->watchedEpisodesList = [];
+            $this->currentStatus = 'watching';
+            $this->rewatchCount = $newRewatchCount;
+            $this->episodeDuration = $tracker->episode_duration ?? 24;
+
+            $tracker->update([
+                'watched_episodes' => 0,
+                'watched_details' => [],
+                'status' => 'watching',
+                'rewatch_count' => $newRewatchCount,
+                'total_rewatched_episodes' => $previousRewatchedTotal,
+                'episode_duration' => $this->episodeDuration,
+            ]);
+
+            $this->dispatch('listUpdated');
         }
     }
-}
 
     public function toggleEpisode($episodeNumber)
     {
@@ -130,4 +166,3 @@ public $currentStatus = 'none';
         return view('components.anime.anime-tracker');
     }
 }
-j

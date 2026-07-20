@@ -64,19 +64,23 @@
                                     </div>
                                 </div>
                                 <p class="text-muted small mb-2">{{ $list->description ?? 'Nessuna descrizione.' }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
                                     <span class="text-primary small fw-semibold">
                                         {{ is_array($list->anime_ids) ? count($list->anime_ids) : 0 }} anime salvati
                                         <span class="text-muted text-xs ms-1">({{ $isCurrent ? 'Clicca per chiudere' : 'Clicca per visualizzare' }})</span>
                                     </span>
-                                    <!-- Bottone Cancella (Ferma propagazione) -->
-                                    @if($list->type !== 'wishlist')
-                                    <div wire:click.stop>
+                                    <div class="d-flex align-items-center gap-2" wire:click.stop>
+                                        <a href="{{ route('lists.show', $list->id) }}"
+                                            class="btn btn-outline-primary btn-sm fw-semibold text-decoration-none">
+                                            Apri dettaglio lista
+                                        </a>
+                                        <!-- Bottone Cancella (Ferma propagazione) -->
+                                        @if($list->type !== 'wishlist')
                                         <button wire:click="deleteList({{ $list->id }})" class="btn btn-outline-danger btn-sm border-0 p-1" onclick="confirm('Vuoi davvero eliminare questa lista?') || event.stopImmediatePropagation()">
                                             🗑️
                                         </button>
+                                        @endif
                                     </div>
-                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -86,12 +90,12 @@
                             <div class="d-flex flex-wrap gap-3">
                                 @forelse($selectedListAnime as $anime)
                                 <!-- Piccola card compatta per ogni anime salvato -->
-                                <div class="card border-0 bg-light p-2 text-center shadow-sm position-relative" style="width: 110px;">
-                                    <a href="/anime/{{ $anime['mal_id'] }}" class="text-decoration-none">
-                                        <img src="{{ $anime['image'] }}" class="img-fluid rounded mb-1 shadow-sm" style="height: 130px; object-fit: cover; width: 100%;">
-                                        <div class="small fw-bold text-dark text-truncate text-start px-1" title="{{ $anime['title'] }}">
+                                <div class="card border-0 bg-light p-2 text-center shadow-sm position-relative" style="width: 120px;">
+                                    <a href="{{ route('anime.show', $anime['mal_id']) }}" class="text-decoration-none text-dark d-block h-100">
+                                        <img src="{{ $anime['image'] }}" class="img-fluid rounded mb-2 shadow-sm" style="height: 140px; object-fit: cover; width: 100%;">
+                                        <h6 class="fw-bold small text-truncate mb-0" style="font-size: 0.8rem;" title="{{ $anime['title'] }}">
                                             {{ $anime['title'] }}
-                                        </div>
+                                        </h6>
                                     </a>
                                 </div>
                                 @empty
@@ -102,7 +106,6 @@
                             </div>
                         </div>
                         @endif
-
                     </div>
                 </div>
                 @endforeach

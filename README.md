@@ -1,15 +1,7 @@
 ##To Do:
 
-1. GESTIONE DELLA LIBRERIA E TRACKING (CORE FEATURES)
-• Catalogo Multimediale Esteso: Supporto nativo e categorizzazione dedicata per Film, Serie TV,
-Anime e Libri, gestendo formati diversi (episodi, capitoli, volumi, film singoli).
-• Stati di Avanzamento Standard: Segmentazione dei contenuti in quattro liste predefinite per
-monitorare lo storico utente: In Corso, Da Guardare (Watchlist), Completati e Abbandonati.
-
 2. GAMIFICATION E STATISTICHE
-• Counter Temporale Avanzato: Algoritmo di calcolo del tempo totale speso nella fruizione dei
-media. Include un tracciamento separato e gamificato dedicato esclusivamente ai Rewatch,
-strutturato con progressione a livelli per incentivare la fedeltà ai propri titoli preferiti.
+
 • Countdown Tempo Rimasto: Indicatore dinamico basato sul minutaggio o numero di episodi/
 pagine rimanenti per completare una specifica serie, anime o saga cinematografica.
 • Sistema di Badge e Obiettivi: Sblocco automatizzato di trofei e riconoscimenti visivi sul profilo al
@@ -49,6 +41,11 @@ ai flussi di comunicazione tramite un server Discord dedicato.
 Specifiche Tracker Multimediale & Community 
 
 ##Ideas:
+
+GESTIONE DELLA LIBRERIA E TRACKING (CORE FEATURES)
+• Catalogo Multimediale Esteso: Supporto nativo e categorizzazione dedicata per Film, Serie TV,
+Anime e Libri, gestendo formati diversi (episodi, capitoli, volumi, film singoli).
+
 
 Integrazione Provider Streaming ("Dove lo guardo?"): Collegamento tramite API esterne per
 mostrare in tempo reale su quali piattaforme ufficiali (Netflix, Prime Video, Crunchyroll, ecc.) è
