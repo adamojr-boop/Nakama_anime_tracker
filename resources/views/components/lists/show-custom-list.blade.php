@@ -1,4 +1,4 @@
-<x-layouts.app>
+<x-app-layout>
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
             <div>
@@ -64,4 +64,4 @@
             </div>
         </div>
     </div>
-</x-layouts.app>
+</x-app-layout>

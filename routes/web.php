@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CustomListController;
+use App\Livewire\Lists\AnimeLists;
 use App\Livewire\PlayQuiz;
 use App\Livewire\ShowAnime;
 use App\Livewire\UserDashboard;
@@ -28,4 +29,5 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', UserDashboard::class)->middleware(['auth'])->name('dashboard');
+    Route::get('/my-lists', AnimeLists::class)->name('user.lists');
 });

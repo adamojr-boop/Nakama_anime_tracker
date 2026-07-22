@@ -4,8 +4,8 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\CustomList;
+use App\Services\AnimeMetadataService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 
 class ManageCustomLists extends Component
 {
@@ -58,42 +58,18 @@ class ManageCustomLists extends Component
 
         $animeIds = $list->anime_ids ?? [];
 
-        // Recuperiamo i dettagli dall'API per ogni anime nella lista
+        $metadataByMalId = app(AnimeMetadataService::class)
+            ->getForMalIds($animeIds)
+            ->keyBy('mal_id');
+
         foreach ($animeIds as $id) {
-            try {
-                $response = Http::timeout(2)->get("https://api.jikan.moe/v4/anime/{$id}");
-                if ($response->successful()) {
-                    $apiData = $response->json()['data'];
-                    $this->selectedListAnime[] = [
-                        'mal_id' => $id,
-                        'title' => $apiData['title'],
-                        'image' => $apiData['images']['jpg']['image_url'] ?? 'https://via.placeholder.com/150x210',
-                    ];
-                    continue;
-                }
-                throw new \Exception();
-            } catch (\Exception $e) {
-                // Fallback Kitsu
-                try {
-                    $kitsuResponse = Http::timeout(2)->get("https://kitsu.io/api/edge/anime/{$id}");
-                    if ($kitsuResponse->successful()) {
-                        $item = $kitsuResponse->json()['data'] ?? null;
-                        if ($item) {
-                            $this->selectedListAnime[] = [
-                                'mal_id' => $id,
-                                'title' => $item['attributes']['canonicalTitle'],
-                                'image' => $item['attributes']['posterImage']['medium'] ?? 'https://via.placeholder.com/150x210',
-                            ];
-                        }
-                    }
-                } catch (\Exception $kitsuEx) {
-                    $this->selectedListAnime[] = [
-                        'mal_id' => $id,
-                        'title' => "Anime #{$id} (Offline)",
-                        'image' => 'https://via.placeholder.com/150x210',
-                    ];
-                }
-            }
+            $meta = $metadataByMalId->get((int) $id);
+
+            $this->selectedListAnime[] = [
+                'mal_id' => (int) $id,
+                'title' => $meta?->title ?? "Anime #{$id}",
+                'image' => $meta?->image_url ?? 'https://via.placeholder.com/150x210',
+            ];
         }
     }
 

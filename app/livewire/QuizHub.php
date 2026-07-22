@@ -9,10 +9,8 @@ class QuizHub extends Component
 {
     public function render()
     {
-        $quizzes = Quiz::query()
+        $quizzes = Quiz::select('id', 'title', 'category', 'description', 'difficulty')
             ->withCount('questions')
-            ->latest()
-            ->take(6)
             ->get();
 
         return view('livewire.quiz-hub', [

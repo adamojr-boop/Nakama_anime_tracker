@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomList;
 use App\Models\EpisodeTracker;
+use App\Services\AnimeMetadataService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 
 class CustomListController extends Controller
 {
@@ -37,6 +37,9 @@ class CustomListController extends Controller
         $animeList = [];
         $animeIds = $list->anime_ids ?? [];
         $trackersByMalId = [];
+        $metadataByMalId = app(AnimeMetadataService::class)
+            ->getForMalIds($animeIds)
+            ->keyBy('mal_id');
 
         if (Auth::check()) {
             $trackersByMalId = EpisodeTracker::where('user_id', Auth::id())
@@ -48,47 +51,15 @@ class CustomListController extends Controller
 
         foreach ($animeIds as $id) {
             $tracker = $trackersByMalId[$id] ?? null;
+            $meta = $metadataByMalId->get((int) $id);
 
-            try {
-                $response = Http::timeout(2)->get("https://api.jikan.moe/v4/anime/{$id}");
-                if ($response->successful()) {
-                    $apiData = $response->json()['data'];
-                    $animeList[] = [
-                        'mal_id' => $id,
-                        'title' => $apiData['title'],
-                        'image' => $apiData['images']['jpg']['image_url'] ?? 'https://via.placeholder.com/150x210',
-                        'status' => $tracker->status ?? null,
-                        'rewatch_count' => $tracker->rewatch_count ?? 0,
-                    ];
-                    continue;
-                }
-
-                throw new \Exception();
-            } catch (\Exception $e) {
-                try {
-                    $kitsuResponse = Http::timeout(2)->get("https://kitsu.io/api/edge/anime/{$id}");
-                    if ($kitsuResponse->successful()) {
-                        $item = $kitsuResponse->json()['data'] ?? null;
-                        if ($item) {
-                            $animeList[] = [
-                                'mal_id' => $id,
-                                'title' => $item['attributes']['canonicalTitle'],
-                                'image' => $item['attributes']['posterImage']['medium'] ?? 'https://via.placeholder.com/150x210',
-                                'status' => $tracker->status ?? null,
-                                'rewatch_count' => $tracker->rewatch_count ?? 0,
-                            ];
-                        }
-                    }
-                } catch (\Exception $kitsuException) {
-                    $animeList[] = [
-                        'mal_id' => $id,
-                        'title' => "Anime #{$id} (Offline)",
-                        'image' => 'https://via.placeholder.com/150x210',
-                        'status' => $tracker->status ?? null,
-                        'rewatch_count' => $tracker->rewatch_count ?? 0,
-                    ];
-                }
-            }
+            $animeList[] = [
+                'mal_id' => (int) $id,
+                'title' => $meta?->title ?? "Anime #{$id}",
+                'image' => $meta?->image_url ?? 'https://via.placeholder.com/150x210',
+                'status' => $tracker->status ?? null,
+                'rewatch_count' => $tracker->rewatch_count ?? 0,
+            ];
         }
 
         return $animeList;

@@ -2,11 +2,12 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Services\BadgeService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Livewire\Component;
 
 class PlayQuiz extends Component
 {
@@ -68,19 +69,19 @@ class PlayQuiz extends Component
                 'correct_answers' => $this->correctAnswersCount,
                 'total_questions' => $this->questions->count(),
             ]);
-            // Integrazione Badge se il punteggio è perfetto (100% risposte corrette)
+
+            // 👈 Svuota la cache della classifica in modo che la prossima richiesta legga i nuovi punteggi!
+            Cache::forget('global_quiz_leaderboard');
+
+            // Integrazione Badge
             if ($this->correctAnswersCount === $this->questions->count()) {
                 $badgeService = app(BadgeService::class);
-                $unlocked = $badgeService->grantBadge(
+                $badgeService->grantBadge(
                     Auth::user(),
                     'Otaku Sensei 🧠',
                     'Hai risposto correttamente a tutte le domande di un Quiz!',
                     '🧠'
                 );
-
-                if ($unlocked) {
-                    $this->unlockedBadges[] = 'Otaku Sensei 🧠';
-                }
             }
         }
     }
@@ -88,6 +89,6 @@ class PlayQuiz extends Component
     public function render()
     {
         return view('components.trivia.play-quiz')
-            ->layout('layouts.app');
+            ->layout('components.layouts.app');
     }
 }
