@@ -1,13 +1,5 @@
 ##To Do:
 
-2. GAMIFICATION E STATISTICHE
-
-Specifiche Tracker Multimediale & Community
-• Area Binge-watching: Visione consecutiva di un numero prefissato di episodi nella stessa
-sessione temporale. 
-• Quiz e Trivia: Modulo interattivo integrato per la generazione di quiz su serie TV e anime, mirato a
-testare il livello di conoscenza degli utenti e a generare classifiche dedicate.
-
 3. INTERAZIONE SOCIAL E COMMUNITY
 • Valutazione di Puntata ed Emozioni: Possibilità di esprimere un voto e selezionare il personaggio
 preferito per singolo episodio. Integrazione di un selettore di reazione emotiva prevalente (es.

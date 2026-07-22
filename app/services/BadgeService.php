@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Badge;
+use App\Models\BingeSession;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class BadgeService
@@ -69,4 +70,58 @@ class BadgeService
 
         return false;
     }
+
+    use App\Models\BingeSession;
+use Carbon\Carbon;
+
+/**
+ * Traccia l'avanzamento degli episodi per verificare le sessioni di binge-watching.
+ *
+ * @param  \App\Models\User  $user
+ * @param  string  $malId
+ * @param  int  $addedEpisodes Numero di episodi aggiunti in questa azione (default 1)
+ * @return array Nomi dei nuovi badge sbloccati
+ */
+public function trackBingeSession($user, string $malId, int $addedEpisodes = 1): array
+{
+    $now = Carbon::now();
+    $maxTimeGapMinutes = 120; // 2 ore di tolleranza tra un episodio e l'altro
+
+    // Cerca una sessione attiva negli ultimi 120 minuti per questo utente e questo anime
+    $session = BingeSession::where('user_id', $user->id)
+        ->where('mal_id', $malId)
+        ->where('last_watched_at', '>=', $now->copy()->subMinutes($maxTimeGapMinutes))
+        ->first();
+
+    if ($session) {
+        // Incrementa la sessione esistente
+        $session->episodes_watched += $addedEpisodes;
+        $session->last_watched_at = $now;
+        $session->save();
+    } else {
+        // Avvia una nuova sessione
+        $session = BingeSession::create([
+            'user_id'          => $user->id,
+            'mal_id'           => $malId,
+            'episodes_watched' => $addedEpisodes,
+            'last_watched_at'  => $now,
+        ]);
+    }
+
+    $unlockedBadges = [];
+
+    if ($session->episodes_watched >= 5) {
+        if ($this->grantBadge($user, 'Binge Watcher', 'Hai guardato 5+ episodi nella stessa sessione!', '🍿')) {
+            $unlockedBadges[] = 'Binge Watcher 🍿';
+        }
+    }
+
+    if ($session->episodes_watched >= 10) {
+        if ($this->grantBadge($user, 'Maratoneta Inarrestabile', 'Hai guardato 10+ episodi nella stessa sessione!', '🔥')) {
+            $unlockedBadges[] = 'Maratoneta Inarrestabile 🔥';
+        }
+    }
+
+    return $unlockedBadges;
+}
 }
