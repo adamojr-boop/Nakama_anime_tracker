@@ -2,9 +2,10 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\EpisodeTracker;
+use App\Services\BadgeService;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class UserStatsWidget extends Component
 {
@@ -105,5 +106,18 @@ class UserStatsWidget extends Component
             'next_target' => 1,
             'progress_percent' => 0,
         ];
+    }
+
+    public function incrementEpisode($malId)
+    {
+        // ... Logica esistente per incrementare l'episodio nel DB/Lista ...
+
+        // Tracciamento Binge-Watching & Trofei
+        $badgeService = app(BadgeService::class);
+        $newBadges = $badgeService->trackBingeSession(auth()->user(), $malId, 1);
+
+        if (!empty($newBadges)) {
+            session()->flash('badge_unlocked', '🏆 Nuovo Trofeo Maratona Sbloccato: ' . implode(', ', $newBadges));
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Badge;
 use App\Models\BingeSession;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class BadgeService
@@ -70,9 +71,6 @@ class BadgeService
 
         return false;
     }
-
-    use App\Models\BingeSession;
-use Carbon\Carbon;
 
 /**
  * Traccia l'avanzamento degli episodi per verificare le sessioni di binge-watching.

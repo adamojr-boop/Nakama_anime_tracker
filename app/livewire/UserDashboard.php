@@ -4,7 +4,9 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\EpisodeTracker;
+use App\Models\QuizAttempt;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class UserDashboard extends Component
@@ -94,9 +96,21 @@ class UserDashboard extends Component
 
     public function render()
     {
-        $this->loadAnimeList();
+        $maxBinge = \App\Models\BingeSession::where('user_id', auth()->id())
+            ->max('episodes_watched') ?? 0;
 
-        return view('livewire.user-dashboard')
+        $leaderboard = QuizAttempt::query()
+            ->select('user_id', DB::raw('SUM(score) as total_score'))
+            ->with('user:id,name')
+            ->groupBy('user_id')
+            ->orderByDesc('total_score')
+            ->limit(5)
+            ->get();
+
+        return view('livewire.user-dashboard', [
+            'maxBinge' => $maxBinge,
+            'leaderboard' => $leaderboard,
+        ])
             ->layout('components.layouts.app');
     }
 }
