@@ -31,6 +31,6 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return redirect('/');
+        return redirect()->route('profile.edit')->with('message', 'Benvenuto! Personalizza il tuo profilo.');
     }
 }

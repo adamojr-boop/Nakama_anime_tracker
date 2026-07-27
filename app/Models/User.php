@@ -7,10 +7,12 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use App\Models\Profile;
 
 /**
  * @property int $id
@@ -55,11 +57,25 @@ class User extends Authenticatable
     }
 
     // Gli anime che l'utente sta seguendo/ha visto
+    // In app/Models/User.php
+
     public function animes()
     {
-        return $this->belongsToMany(User::class, 'anime_user', 'user_id', 'mal_id')
-            ->withPivot('episodes_watched', 'status')
-            ->withTimestamps();
+        // Indichiamo a Laravel:
+        // 1. Tabella pivot: 'anime_user'
+        // 2. Foreign Key utente: 'user_id'
+        // 3. Foreign Key anime: 'mal_id'
+        return $this->belongsToMany(
+            Anime::class,
+            'anime_user',
+            'user_id',
+            'mal_id'
+        )->withPivot('status', 'episodes_watched')->withTimestamps();
+    }
+
+    public function watchingAnimes()
+    {
+        return $this->animes()->wherePivot('status', 'watching');
     }
 
     // Le recensioni scritte dall'utente
@@ -73,5 +89,15 @@ class User extends Authenticatable
         return $this->belongsToMany(Badge::class, 'user_badge')
             ->withPivot('unlocked_at')
             ->withTimestamps();
+    }
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class)->withDefault([
+            'banner_pattern' => 'pattern-1',
+            'avatar_frame'   => 'default',
+            'bio'            => 'Appassionato/a di Anime & Manga!',
+            'social_links'   => []
+        ]);
     }
 }

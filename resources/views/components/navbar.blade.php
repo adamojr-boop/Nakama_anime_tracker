@@ -28,17 +28,56 @@
                     <a class="nav-link {{ request()->routeIs('user.lists') ? 'active fw-bold text-primary' : '' }}" href="{{ route('user.lists') }}">Le mie Liste</a>
                 </li>
 
-                <!-- Nome Utente (Disattivato come link, serve solo da indicatore) -->
-                <li class="nav-item">
-                    <span class="nav-link text-dark fw-semibold">Ciao, {{ auth()->user()->name }}</span>
-                </li>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Tema Piattaforma</label>
+                    <select wire:model="theme" class="form-select">
+                        <option value="dark">🌙 Scuro (Dark)</option>
+                        <option value="light">☀️ Chiaro (Light)</option>
+                    </select>
+                </div>
 
-                <!-- Form di Logout (Obbligatorio POST in Laravel per sicurezza) -->
-                <li class="nav-item">
-                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-outline-danger btn-sm ms-lg-2">Esci</button>
-                    </form>
+                <!-- DROPDOWN PROFILO UTENTE -->
+                @php
+                $authUser = auth()->user();
+                $userProfile = $authUser->profile;
+                $navAvatar = $userProfile && $userProfile->avatar
+                ? asset('storage/' . $userProfile->avatar)
+                : 'https://ui-avatars.com/api/?name=' . urlencode($authUser->name) . '&background=0d6efd&color=fff';
+                @endphp
+
+                <li class="nav-item dropdown ms-lg-2">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 {{ request()->routeIs('profile.*') ? 'active fw-bold text-primary' : '' }}"
+                        href="#"
+                        id="navbarProfileDropdown"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <img src="{{ $navAvatar }}" alt="{{ $authUser->name }}" width="30" height="30" class="rounded-circle border border-primary" style="object-fit: cover;">
+                        <span class="fw-semibold">{{ $authUser->name }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="navbarProfileDropdown">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2 {{ request()->routeIs('profile.show') ? 'active' : '' }}" href="{{ route('profile.show') }}">
+                                👤 Il Mio Profilo
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2 {{ request()->routeIs('profile.edit') ? 'active' : '' }}" href="{{ route('profile.edit') }}">
+                                ⚙️ Impostazioni Profilo
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2">
+                                    🚪 Esci
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </li>
                 @else
                 <!-- SE L'UTENTE È UN OSPITE -->
