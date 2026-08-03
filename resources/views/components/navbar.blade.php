@@ -28,14 +28,6 @@
                     <a class="nav-link {{ request()->routeIs('user.lists') ? 'active fw-bold text-primary' : '' }}" href="{{ route('user.lists') }}">Le mie Liste</a>
                 </li>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Tema Piattaforma</label>
-                    <select wire:model="theme" class="form-select">
-                        <option value="dark">🌙 Scuro (Dark)</option>
-                        <option value="light">☀️ Chiaro (Light)</option>
-                    </select>
-                </div>
-
                 <!-- DROPDOWN PROFILO UTENTE -->
                 @php
                 $authUser = auth()->user();

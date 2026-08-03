@@ -35,38 +35,39 @@
                     @if($currentStatus === 'watching') 📺 In Corso
                     @elseif($currentStatus === 'plan_to_watch') ⏳ Da Guardare
                     @elseif($currentStatus === 'completed') 🎉 Completato
-                    @elseif($currentStatus === 'dropped') ❌ Abbandonato
+                    @elseif($currentStatus === 'on_hold') ❌ Abbandonato
                     @else ⚪ Non Tracciato
                     @endif
                 </button>
                 <ul class="dropdown-menu shadow-sm">
                     <li>
-                        <button wire:click="changeStatus('watching')" class="dropdown-item small d-flex align-items-center gap-2 {{ $currentStatus === 'watching' ? 'active' : '' }}">
+                        <a href="#" wire:click.prevent="changeStatus('watching')" class="dropdown-item small d-flex align-items-center gap-2 {{ $currentStatus === 'watching' ? 'active' : '' }}">
                             📺 In Corso
-                        </button>
+                        </a>
                     </li>
                     <li>
-                        <button wire:click="changeStatus('plan_to_watch')" class="dropdown-item small d-flex align-items-center gap-2 {{ $currentStatus === 'plan_to_watch' ? 'active' : '' }}">
+                        <a href="#" wire:click.prevent="changeStatus('plan_to_watch')" class="dropdown-item small d-flex align-items-center gap-2 {{ $currentStatus === 'plan_to_watch' ? 'active' : '' }}">
                             ⏳ Da Guardare
-                        </button>
+                        </a>
                     </li>
                     <li>
-                        <button wire:click="changeStatus('completed')" class="dropdown-item small d-flex align-items-center gap-2 {{ $currentStatus === 'completed' ? 'active' : '' }}">
+                        <a href="#" wire:click.prevent="changeStatus('completed')" class="dropdown-item small d-flex align-items-center gap-2 {{ $currentStatus === 'completed' ? 'active' : '' }}">
                             🎉 Completato
-                        </button>
+                        </a>
                     </li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
                     <li>
-                        <button wire:click="changeStatus('dropped')" class="dropdown-item small text-danger d-flex align-items-center gap-2 {{ $currentStatus === 'dropped' ? 'bg-danger text-white' : '' }}">
+                        {{-- Cambiato 'dropped' con 'on_hold' per combaciare con la Migration --}}
+                        <a href="#" wire:click.prevent="changeStatus('on_hold')" class="dropdown-item small text-danger d-flex align-items-center gap-2 {{ $currentStatus === 'on_hold' ? 'bg-danger text-white' : '' }}">
                             ❌ Abbandona Serie
-                        </button>
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
-        <!-- 🌟 Pulsante per iniziare il Rewatch se l'anime è completato -->
+
         @if($currentStatus === 'completed')
         <button wire:click="startRewatch"
             wire:confirm="Vuoi davvero ricominciare questo anime? Gli episodi verranno resettati ma il tuo contatore Rewatch aumenterà!"
@@ -74,6 +75,7 @@
             🔄 Ricomincia Anime (Rewatch)
         </button>
         @endif
+
     </div>
     <!-- Griglia Episodi -->
     <div class="d-flex flex-wrap gap-2 overflow-auto p-1" style="max-height: 250px;">

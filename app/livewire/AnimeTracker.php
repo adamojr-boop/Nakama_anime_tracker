@@ -100,19 +100,25 @@ class AnimeTracker extends Component
     public function changeStatus($newStatus)
     {
         if (!Auth::check()) return;
-        // Assicurati che 'dropped' sia presente in questo array di validazione
-        if (!in_array($newStatus, ['watching', 'plan_to_watch', 'completed', 'dropped'])) return;
-        // Aggiorna o crea il record sul database impostando lo status corretto
-        \App\Models\EpisodeTracker::updateOrCreate(
+
+        $validStatuses = ['watching', 'plan_to_watch', 'completed', 'on_hold'];
+
+        if (!in_array($newStatus, $validStatuses, true)) {
+            return;
+        }
+
+        $this->currentStatus = $newStatus;
+
+        EpisodeTracker::updateOrCreate(
             ['user_id' => Auth::id(), 'mal_id' => $this->malId],
             [
                 'watched_episodes' => count($this->watchedEpisodesList),
                 'watched_details' => $this->watchedEpisodesList,
-                'status' => $newStatus // <-- Deve salvare il valore ricevuto ('dropped')
+                'status' => $newStatus,
             ]
         );
-        // Esegui la pulizia dalle liste
-        if ($newStatus === 'dropped') {
+
+        if ($newStatus === 'on_hold') {
             $this->cleanAnimeFromAllLists();
         }
 
@@ -130,6 +136,8 @@ class AnimeTracker extends Component
         } else {
             $status = 'plan_to_watch';
         }
+
+        $this->currentStatus = $status;
 
         EpisodeTracker::updateOrCreate(
             ['user_id' => Auth::id(), 'mal_id' => $this->malId],
