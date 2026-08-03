@@ -1,7 +1,6 @@
 # Doing
 
-* **Diario di Visione Storico (Calendar View):** Calendario interattivo mensile per visualizzare la cronologia passata dei propri check-in e delle visioni completate.
-* **Note Private di Visione:** Blocco note privato all'interno della scheda di ciascun contenuto per salvare citazioni, *timestamp* o riflessioni personali senza doverle pubblicare nei commenti.
+* **Countdown Uscite in Tempo Reale:** Widget con timer visivo ad aggiornamento dinamico (giorni, ore, minuti) per segnalare il rilascio del prossimo episodio per i titoli in corso di simulcast o programmazione.
 
 -----------------------------------------------------
 
@@ -9,11 +8,8 @@
 
 ## 1. Tracking Esteso & Personalizzazione
 * **Catalogo Multimediale Esteso:** Ampliamento del sistema di tracciamento per supportare non solo Anime, ma anche Film, Serie TV e Libri (gestione di episodi, capitoli, volumi e lungometraggi).
-
+* **Note Private di Visione:** Blocco note privato all'interno della scheda di ciascun contenuto per salvare citazioni, *timestamp* o riflessioni personali senza doverle pubblicare nei commenti.
 * **Provider Streaming e Trailer dell'anime (*"Dove lo guardo?"*):** Integrazione API esterne (es. JustWatch) per mostrare su quali piattaforme ufficiali (Netflix, Prime Video, Crunchyroll, ecc.) è disponibile il titolo cercato.
------------------------------------------------------
-## 2. Live Info & Countdown
-* **Countdown Uscite in Tempo Reale:** Widget con timer visivo ad aggiornamento dinamico (giorni, ore, minuti) per segnalare il rilascio del prossimo episodio per i titoli in corso di simulcast o programmazione.
 -----------------------------------------------------
 ## 3. Social, Community & Reazioni
 * **Valutazione Puntata ed Emozioni:**

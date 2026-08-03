@@ -7,6 +7,7 @@ use App\Models\EpisodeTracker;
 use App\Services\BadgeService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use App\Models\EpisodeLog;
 
 class AnimeTracker extends Component
 {
@@ -73,28 +74,57 @@ class AnimeTracker extends Component
         }
     }
 
-    public function toggleEpisode($episodeNumber)
+    public function toggleEpisode($episodeNumber, $malId = null)
     {
         if (!Auth::check()) return;
 
-        $isAdding = !in_array($episodeNumber, $this->watchedEpisodesList);
+        $userId = Auth::id();
+        $episodeNumber = (int) $episodeNumber;
+        $targetMalId = is_numeric($malId) ? (int) $malId : (int) $this->malId;
 
-        if ($isAdding) {
-            $this->watchedEpisodesList[] = $episodeNumber;
+        if ($episodeNumber <= 0 || $targetMalId <= 0) {
+            return;
+        }
 
-            // 🌟 CHECK BADGE HYPE: Quando segna un nuovo episodio come visto
-            $badgeService = app(BadgeService::class);
-            $unlocked = $badgeService->checkHypeBadge(Auth::user());
+        $isWatched = in_array($episodeNumber, $this->watchedEpisodesList, true);
 
-            if ($unlocked) {
-                session()->flash('badge_unlocked', '🏆 Trofeo Sbloccato: Simulcast Warrior!');
-            }
+        if ($isWatched) {
+            $this->watchedEpisodesList = array_values(array_diff($this->watchedEpisodesList, [$episodeNumber]));
         } else {
-            $this->watchedEpisodesList = array_diff($this->watchedEpisodesList, [$episodeNumber]);
+            $this->watchedEpisodesList[] = $episodeNumber;
         }
 
         sort($this->watchedEpisodesList);
         $this->updateDatabase();
+
+        $existingLog = EpisodeLog::where('user_id', $userId)
+            ->where('mal_id', $targetMalId)
+            ->where('episode_number', $episodeNumber)
+            ->first();
+
+        if ($existingLog) {
+            $existingLog->delete();
+        } else {
+            EpisodeLog::create([
+                'user_id' => $userId,
+                'mal_id' => $targetMalId,
+                'episode_number' => $episodeNumber,
+                'watched_at' => now(),
+            ]);
+        }
+
+        // 📢 EMETTIAMO L'EVENTO PER IL CALENDARIO
+        $this->dispatch('episode-logged');
+
+        // Tracciamento Badge / Trofei (opzionale)
+        if (!$isWatched) {
+            $badgeService = app(BadgeService::class);
+            $newBadges = $badgeService->trackBingeSession(Auth::user(), (string) $targetMalId, 1);
+
+            if (!empty($newBadges)) {
+                session()->flash('badge_unlocked', '🏆 Nuovo Trofeo Maratona Sbloccato: ' . implode(', ', $newBadges));
+            }
+        }
     }
     // 🌟 Nuova funzione per forzare lo stato (es. Abbandonato o Da Guardare) manualmente
     public function changeStatus($newStatus)

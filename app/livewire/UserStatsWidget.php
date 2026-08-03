@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\EpisodeLog;
 use App\Models\EpisodeTracker;
 use App\Services\BadgeService;
 use Illuminate\Support\Facades\Auth;
@@ -110,9 +111,27 @@ class UserStatsWidget extends Component
 
     public function incrementEpisode($malId)
     {
-        // ... Logica esistente per incrementare l'episodio nel DB/Lista ...
+        $tracker = EpisodeTracker::where('user_id', auth()->id())
+            ->where('mal_id', $malId)
+            ->first();
 
-        // Tracciamento Binge-Watching & Trofei
+        if ($tracker) {
+            $oldEpisodes = (int) $tracker->watched_episodes;
+
+            $newEpisodes = (int) $tracker->watched_episodes;
+
+            if ($newEpisodes > $oldEpisodes) {
+                for ($ep = $oldEpisodes + 1; $ep <= $newEpisodes; $ep++) {
+                    EpisodeLog::create([
+                        'user_id' => auth()->id(),
+                        'mal_id' => $malId,
+                        'episode_number' => $ep,
+                        'watched_at' => now(),
+                    ]);
+                }
+            }
+        }
+
         $badgeService = app(BadgeService::class);
         $newBadges = $badgeService->trackBingeSession(auth()->user(), $malId, 1);
 
