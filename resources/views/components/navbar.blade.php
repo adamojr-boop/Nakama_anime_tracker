@@ -28,6 +28,8 @@
                     <a class="nav-link {{ request()->routeIs('user.lists') ? 'active fw-bold text-primary' : '' }}" href="{{ route('user.lists') }}">Le mie Liste</a>
                 </li>
 
+                <livewire:anime-recommendation-modal />
+
                 <!-- DROPDOWN PROFILO UTENTE -->
                 @php
                 $authUser = auth()->user();

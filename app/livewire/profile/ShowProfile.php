@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Profile;
 
+use App\Models\EpisodeTracker;
+use App\Services\AnimeMetadataService;
 use Livewire\Component;
 use App\Models\User;
 
@@ -28,14 +30,18 @@ class ShowProfile extends Component
     {
         $profile = $this->user?->profile;
 
-        // Recupera gli anime con stato 'watching' basandosi sulla tabella pivot
-        $watchingAnimes = $this->user?->animes()
-            ->wherePivot('status', 'watching')
-            ->get() ?? collect();
+        $trackers = $this->user
+            ? EpisodeTracker::query()
+                ->where('user_id', $this->user->id)
+                ->get()
+            : collect();
 
-        // Conteggi per le statistiche basati sulle colonne corrette della pivot
-        $completedCount = $this->user?->animes()->wherePivot('status', 'completed')->count() ?? 0;
-        $totalEpisodesWatched = $this->user?->animes()->sum('anime_user.episodes_watched') ?? 0;
+        // Unica fonte dati: episode_trackers, con metadata locale per card e titoli.
+        $watchingTrackers = $trackers->where('status', 'watching')->values();
+        $watchingAnimes = collect(app(AnimeMetadataService::class)->hydrateTrackers($watchingTrackers));
+
+        $completedCount = $trackers->where('status', 'completed')->count();
+        $totalEpisodesWatched = (int) $trackers->sum('watched_episodes');
 
         $stats = [
             'total_completed' => $completedCount,

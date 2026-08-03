@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -75,7 +76,12 @@ class User extends Authenticatable
 
     public function watchingAnimes()
     {
-        return $this->animes()->wherePivot('status', 'watching');
+        return $this->episodeTrackers()->where('status', 'watching');
+    }
+
+    public function episodeTrackers(): HasMany
+    {
+        return $this->hasMany(EpisodeTracker::class);
     }
 
     // Le recensioni scritte dall'utente
