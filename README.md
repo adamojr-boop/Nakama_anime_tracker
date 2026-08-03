@@ -1,19 +1,20 @@
+# Doing
+
+* **Diario di Visione Storico (Calendar View):** Calendario interattivo mensile per visualizzare la cronologia passata dei propri check-in e delle visioni completate.
+* **Note Private di Visione:** Blocco note privato all'interno della scheda di ciascun contenuto per salvare citazioni, *timestamp* o riflessioni personali senza doverle pubblicare nei commenti.
+
+-----------------------------------------------------
+
 # To-Do:
 
 ## 1. Tracking Esteso & Personalizzazione
 * **Catalogo Multimediale Esteso:** Ampliamento del sistema di tracciamento per supportare non solo Anime, ma anche Film, Serie TV e Libri (gestione di episodi, capitoli, volumi e lungometraggi).
 
-* **Diario di Visione Storico (Calendar View):** Calendario interattivo mensile per visualizzare la cronologia passata dei propri check-in e delle visioni completate.
-* **Note Private di Visione:** Blocco note privato all'interno della scheda di ciascun contenuto per salvare citazioni, *timestamp* o riflessioni personali senza doverle pubblicare nei commenti.
 * **Provider Streaming e Trailer dell'anime (*"Dove lo guardo?"*):** Integrazione API esterne (es. JustWatch) per mostrare su quali piattaforme ufficiali (Netflix, Prime Video, Crunchyroll, ecc.) è disponibile il titolo cercato.
-
----
-
+-----------------------------------------------------
 ## 2. Live Info & Countdown
 * **Countdown Uscite in Tempo Reale:** Widget con timer visivo ad aggiornamento dinamico (giorni, ore, minuti) per segnalare il rilascio del prossimo episodio per i titoli in corso di simulcast o programmazione.
-
----
-
+-----------------------------------------------------
 ## 3. Social, Community & Reazioni
 * **Valutazione Puntata ed Emozioni:**
   * Voto e selezione del personaggio preferito per singolo episodio.
@@ -24,9 +25,7 @@
   * Oscuramento preventivo dei commenti contenenti spoiler, attivabile dall'autore o tramite segnalazione della community.
 * **Algoritmo di Affinità Tra Utenti:**
   * Calcolo percentuale di compatibilità ("Affinità") tra due profili analizzando generi preferiti e reazioni emotive condivise.
-
----
-
+-----------------------------------------------------
 ## 4. Esperienza Utente, Profilo & Blog
 * **Personalizzazione Avanzata Profilo:**
   * Personalizzazione estetica dello spazio utente (banner, avatar, biografia, bacheca badge e sezione *"Vetrina dei Preferiti"*).

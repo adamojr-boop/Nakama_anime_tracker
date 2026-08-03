@@ -48,14 +48,31 @@
                     @if($recommendation)
                     <div class="mt-4 p-3 bg-secondary bg-opacity-25 border border-warning rounded-3 animate__animated animate__fadeIn">
                         <div class="d-flex gap-3 align-items-center">
+
+                            <!-- IMMAGINE CLICCABILE -->
                             @if(!empty($recommendation['image_url']))
-                            <img src="{{ $recommendation['image_url'] }}" class="rounded object-fit-cover" style="width: 70px; height: 100px;" alt="{{ $recommendation['title'] }}">
+                            <a href="https://myanimelist.net/anime/{{ $recommendation['mal_id'] }}" target="_blank" title="Vedi su MyAnimeList">
+                                <img src="{{ $recommendation['image_url'] }}"
+                                    class="rounded object-fit-cover shadow-sm hover-scale"
+                                    style="width: 70px; height: 100px; transition: transform 0.2s;"
+                                    alt="{{ $recommendation['title'] }}">
+                            </a>
                             @endif
+
                             <div>
                                 <span class="badge bg-success mb-1">
                                     {{ $recommendation['status'] === 'watching' ? 'In Corso' : 'Da Guardare' }}
                                 </span>
-                                <h6 class="fw-bold mb-1 text-white">{{ $recommendation['title'] }}</h6>
+
+                                <!-- TITOLO CLICCABILE -->
+                                <h6 class="fw-bold mb-1">
+                                    <a href="https://myanimelist.net/anime/{{ $recommendation['mal_id'] }}"
+                                        target="_blank"
+                                        class="text-white text-decoration-none hover-warning">
+                                        {{ $recommendation['title'] }} ↗
+                                    </a>
+                                </h6>
+
                                 <p class="small text-light mb-1">
                                     👉 Ti consigliamo di guardare
                                     <strong class="text-warning">
@@ -66,10 +83,16 @@
                                         @endif
                                     </strong>
                                 </p>
+
                                 <small class="text-muted d-block fs-xs">
                                     ⏱️ Tempo stimato: ~{{ $recommendation['total_time_needed'] }} min
                                 </small>
                             </div>
+                        </div>
+
+                        <!-- MOSTRA IL COMPONENTE (Gestirà lui se mostrare i link o l'avviso "Non trovato") -->
+                        <div class="mt-3 pt-2 border-top border-secondary border-opacity-50">
+                            <x-streaming-providers :platforms="$recommendation['streaming_platforms'] ?? []" />
                         </div>
                     </div>
                     @endif

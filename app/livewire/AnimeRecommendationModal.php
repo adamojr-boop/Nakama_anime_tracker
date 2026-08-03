@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\EpisodeTracker;
 use App\Services\AnimeMetadataService;
+use App\Services\AnimeStreamingService; // <-- Importato correttamente in alto
 use Livewire\Component;
 
 class AnimeRecommendationModal extends Component
@@ -15,7 +16,7 @@ class AnimeRecommendationModal extends Component
 
     const DEFAULT_EPISODE_DURATION = 24;
 
-    public function generateRecommendation()
+    public function generateRecommendation(AnimeStreamingService $streamingService)
     {
         $this->errorMessage = null;
         $this->recommendation = null;
@@ -63,8 +64,13 @@ class AnimeRecommendationModal extends Component
                     $maxEpisodesPossible = max(1, $endEp - $startEp + 1);
                 }
 
+                $malId = (int) $tracker->mal_id;
+
+                // Recuperiamo i link streaming ufficiali via Jikan/MAL
+                $streamingPlatforms = $streamingService->getStreamingPlatforms($malId);
+
                 $this->recommendation = [
-                    'mal_id' => (int) $tracker->mal_id,
+                    'mal_id' => $malId,
                     'title' => $meta?->title ?? "Anime #{$tracker->mal_id}",
                     'image_url' => $meta?->image_url,
                     'total_episodes' => $totalEpisodes,
@@ -73,6 +79,7 @@ class AnimeRecommendationModal extends Component
                     'end_episode' => $endEp,
                     'total_time_needed' => $maxEpisodesPossible * $episodeDuration,
                     'status' => $tracker->status,
+                    'streaming_platforms' => $streamingPlatforms,
                 ];
 
                 $found = true;

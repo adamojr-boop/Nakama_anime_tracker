@@ -204,20 +204,27 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
 
             <!-- CONTENUTO TAB 3: TROFEI & BADGE -->
             @if($activeTab === 'badges')
-            <h5 class="fw-bold mb-3">🏆 Bacheca Badge Sbloccati</h5>
+            <h5 class="fw-bold mb-3 text-white">🏆 Bacheca Badge Sbloccati</h5>
             <div class="row g-3">
                 @forelse($badges ?? [] as $badge)
                 <div class="col-md-6">
-                    <div class="d-flex align-items-center p-3 rounded-3 border {{ $badge['unlocked'] ? 'bg-secondary bg-opacity-25 border-warning' : 'bg-dark border-secondary opacity-50' }}">
-                        <div class="fs-1 me-3">{{ $badge['icon'] }}</div>
-                        <div>
-                            <h6 class="fw-bold mb-1 {{ $badge['unlocked'] ? 'text-warning' : 'text-muted' }}">
-                                {{ $badge['title'] }}
+                    <div class="d-flex align-items-center p-3 rounded-3 border {{ $badge['unlocked'] ? 'bg-dark bg-gradient border-warning shadow-sm' : 'bg-dark border-secondary opacity-50' }}">
+                        <div class="fs-1 me-3 align-self-center">{{ $badge['icon'] }}</div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <h6 class="fw-bold mb-0 {{ $badge['unlocked'] ? 'text-warning' : 'text-secondary' }}">
+                                    {{ $badge['title'] }}
+                                </h6>
                                 @if(!$badge['unlocked'])
-                                <span class="badge bg-secondary ms-1 fs-xs">Bloccato</span>
+                                <span class="badge bg-secondary text-white fs-xs">🔒 Bloccato</span>
+                                @else
+                                <span class="badge bg-warning text-dark fw-bold fs-xs">✨ Sbloccato</span>
                                 @endif
-                            </h6>
-                            <p class="small text-muted mb-0">{{ $badge['description'] }}</p>
+                            </div>
+                            <!-- Testo corretto: visibile sia se sbloccato che bloccato -->
+                            <p class="small mb-0 {{ $badge['unlocked'] ? 'text-light-50' : 'text-secondary' }}">
+                                {{ $badge['description'] }}
+                            </p>
                         </div>
                     </div>
                 </div>
