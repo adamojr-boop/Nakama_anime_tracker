@@ -10,7 +10,7 @@
     <!-- Widgets Livewire -->
     <div class="mb-4">
         <livewire:user-stats-widget />
-
+        <livewire:episode-countdown />
         <livewire:watch-history-calendar />
 
         <div class="card p-3 shadow-sm border-0 bg-dark text-white mb-3">
