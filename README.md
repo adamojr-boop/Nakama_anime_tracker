@@ -1,6 +1,7 @@
 # Doing
 
-* **Countdown Uscite in Tempo Reale:** Widget con timer visivo ad aggiornamento dinamico (giorni, ore, minuti) per segnalare il rilascio del prossimo episodio per i titoli in corso di simulcast o programmazione.
+* **Personalizzazione Avanzata Profilo:**
+  * Personalizzazione estetica dello spazio utente (banner, avatar, biografia, bacheca badge e sezione *"Vetrina dei Preferiti"*).
 
 -----------------------------------------------------
 
@@ -23,8 +24,7 @@
   * Calcolo percentuale di compatibilità ("Affinità") tra due profili analizzando generi preferiti e reazioni emotive condivise.
 -----------------------------------------------------
 ## 4. Esperienza Utente, Profilo & Blog
-* **Personalizzazione Avanzata Profilo:**
-  * Personalizzazione estetica dello spazio utente (banner, avatar, biografia, bacheca badge e sezione *"Vetrina dei Preferiti"*).
+
 * **Infografiche & Statistiche Avanzate:**
   * Grafici interattivi (a torta e temporali) per visualizzare generi più visti, anno medio di produzione dei media e fedeltà a studi/registi.
 * **UX Sociale & Community:**
