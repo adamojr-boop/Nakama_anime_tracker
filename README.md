@@ -1,7 +1,7 @@
 # Doing
 
 * **Personalizzazione Avanzata Profilo:**
-  * Personalizzazione estetica dello spazio utente (banner, avatar, biografia, bacheca badge e sezione *"Vetrina dei Preferiti"*).
+  * Creazione pagina Profilo e personalizzazione estetica dello spazio utente (banner, avatar, biografia, bacheca badge e sezione *"Vetrina dei Preferiti"*).
 
 -----------------------------------------------------
 
