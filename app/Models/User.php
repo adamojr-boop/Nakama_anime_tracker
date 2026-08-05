@@ -60,16 +60,18 @@ class User extends Authenticatable
     // Gli anime che l'utente sta seguendo/ha visto
     // In app/Models/User.php
 
+    // In app/Models/User.php
+
     public function animes()
     {
-        // Indichiamo a Laravel:
-        // 1. Tabella pivot: 'anime_user'
-        // 2. Foreign Key utente: 'user_id'
-        // 3. Foreign Key anime: 'mal_id'
+        // Indichiamo a Eloquent che la relazione usa la tabella pivot 'anime_user'
+        // e si collega alla tabella 'anime_metadata' usando 'mal_id'
         return $this->belongsToMany(
-            Anime::class,
+            AnimeMetadata::class, // Usa il tuo modello (es. AnimeMetadata) al posto di Anime
             'anime_user',
             'user_id',
+            'mal_id',
+            'id',
             'mal_id'
         )->withPivot('status', 'episodes_watched')->withTimestamps();
     }

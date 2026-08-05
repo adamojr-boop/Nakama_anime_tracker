@@ -19,9 +19,9 @@ class Profile extends Model
         'social_links',
     ];
 
-    // --- AGGIUNGI QUESTO BLOCCO CASTS ---
     protected $casts = [
         'social_links' => 'array',
+        'favorite_animes' => 'array', // Per salvare i 5 ID/Slot della vetrina
     ];
 
     public function user()

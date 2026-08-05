@@ -3,17 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Profile;
 
 class FavoriteAnime extends Model
 {
+    protected $table = 'favorite_animes';
+
     protected $fillable = [
         'profile_id',
+        'slot_position',
         'mal_id',
         'title',
-        'image_url',
-        'custom_tag',
-        'slot_position',
+        'image_url', // Mettilo se presente nella migrazione, altrimenti rimuovilo
     ];
 
     public function profile()

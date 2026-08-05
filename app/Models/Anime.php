@@ -9,6 +9,8 @@ class Anime extends Model
 {
     use HasFactory;
 
+    protected $table = 'anime_metadata';
+
     protected $fillable = [
         'title',
         'slug',
