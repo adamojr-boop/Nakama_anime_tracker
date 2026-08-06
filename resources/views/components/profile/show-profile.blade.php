@@ -242,30 +242,27 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
 
         <!-- TAB 2: STATISTICHE -->
         @if($activeTab === 'stats')
-        <h5 class="fw-bold mb-3">📊 Statistiche di Visione</h5>
-        <div class="row g-3">
-            <div class="col-md-3 col-6">
-                <div class="p-3 bg-secondary bg-opacity-25 rounded-3 border border-secondary border-opacity-25 text-center">
-                    <div class="fs-3 fw-bold text-primary">{{ $stats['total_completed'] ?? 0 }}</div>
-                    <div class="text-muted small">Anime Completati</div>
+        <div
+            id="profile-stats-charts"
+            class="row g-4 mt-2"
+            data-chart='@json($chartData)'
+            x-data
+            x-init="$nextTick(() => renderProfileCharts(JSON.parse($el.dataset.chart)))">
+            <div class="col-md-6">
+                <div class="card bg-dark border-secondary p-3 rounded-4 h-100 shadow-sm">
+                    <h6 class="fw-bold text-white mb-3 text-center">🎨 Generi Più Visti</h6>
+                    <div style="position: relative; height: 260px; width: 100%;">
+                        <canvas id="genresChart"></canvas>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-3 col-6">
-                <div class="p-3 bg-secondary bg-opacity-25 rounded-3 border border-secondary border-opacity-25 text-center">
-                    <div class="fs-3 fw-bold text-success">{{ $stats['episodes_watched'] ?? 0 }}</div>
-                    <div class="text-muted small">Episodi Visti</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="p-3 bg-secondary bg-opacity-25 rounded-3 border border-secondary border-opacity-25 text-center">
-                    <div class="fs-3 fw-bold text-warning">{{ $stats['time_watched_hours'] ?? 0 }}h</div>
-                    <div class="text-muted small">Tempo Totale</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="p-3 bg-secondary bg-opacity-25 rounded-3 border border-secondary border-opacity-25 text-center">
-                    <div class="fs-3 fw-bold text-info">{{ $stats['favorite_genre'] ?? 'N/D' }}</div>
-                    <div class="text-muted small">Genere Preferito</div>
+
+            <div class="col-md-6">
+                <div class="card bg-dark border-secondary p-3 rounded-4 h-100 shadow-sm">
+                    <h6 class="fw-bold text-white mb-3 text-center">🏢 Studi di Animazione Preferiti</h6>
+                    <div style="position: relative; height: 260px; width: 100%;">
+                        <canvas id="studiosChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -332,7 +329,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
                     @endphp
 
                     <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-secondary bg-opacity-10 border border-secondary border-opacity-25">
-                        <a href="{{ route('profile.show', $modalUser->id) }}" class="d-flex align-items-center gap-3 text-decoration-none text-white">
+                        <a href="{{ route('profile.user', $modalUser->id) }}" class="d-flex align-items-center gap-3 text-decoration-none text-white">
                             <img src="{{ $userAvatar }}" class="rounded-circle" style="width: 42px; height: 42px; object-fit: cover;">
                             <div>
                                 <h6 class="fw-bold mb-0 text-white fs-6">{{ $modalUser->name }}</h6>
@@ -359,3 +356,6 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
 </div>
 @endif
 </div>
+@once
+@vite('resources/js/profile-charts.js')
+@endonce

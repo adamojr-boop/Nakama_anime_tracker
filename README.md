@@ -1,9 +1,5 @@
 # Doing
 
-## 4. Esperienza Utente, Profilo & Blog
-
-* **Infografiche & Statistiche Avanzate:**
-  * Grafici interattivi (a torta e temporali) per visualizzare generi più visti, anno medio di produzione dei media e fedeltà a studi/registi.
 
 
 -----------------------------------------------------

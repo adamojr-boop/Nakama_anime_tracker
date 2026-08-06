@@ -13,11 +13,15 @@ class AnimeMetadata extends Model
         'title',
         'image_url',
         'total_episodes',
+        'genres',
+        'studios',
         'source',
         'last_synced_at',
     ];
 
     protected $casts = [
+        'genres' => 'array',
+        'studios' => 'array',
         'last_synced_at' => 'datetime',
     ];
 }

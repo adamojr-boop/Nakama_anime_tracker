@@ -3,6 +3,7 @@
 namespace App\Livewire\Profile;
 
 use App\Models\EpisodeTracker;
+use App\Models\AnimeMetadata;
 use App\Services\AnimeMetadataService;
 use Livewire\Component;
 use App\Models\User;
@@ -49,19 +50,14 @@ class ShowProfile extends Component
 
     public function render()
     {
-        // 1. Ricarica il profilo ed i relativi preferiti
-        // In App\Livewire\Profile\ShowProfile.php -> render()
-
         $profile = $this->user?->profile()->with('favoriteAnimes')->first();
 
         $favoritesBySlot = [];
         if ($profile && $profile->favoriteAnimes) {
-            // Raccogliamo i mal_id per recuperare le immagini mancanti dai metadata
             $malIds = $profile->favoriteAnimes->pluck('mal_id')->filter()->toArray();
-            $metadata = \App\Models\AnimeMetadata::whereIn('mal_id', $malIds)->get()->keyBy('mal_id');
+            $metadata = AnimeMetadata::whereIn('mal_id', $malIds)->get()->keyBy('mal_id');
 
             foreach ($profile->favoriteAnimes as $fav) {
-                // Se image_url è vuoto nel preferito, lo prendiamo dal record metadata
                 $meta = $metadata->get($fav->mal_id);
                 $fav->image_display = $fav->image_url
                     ?? $meta?->image_url
@@ -120,15 +116,16 @@ class ShowProfile extends Component
 
         return view('components.profile.show-profile', [
             'profile' => $profile,
-            'favoritesBySlot' => $favoritesBySlot, // Passiamo il nuovo array organizzato per slot
+            'favoritesBySlot' => $favoritesBySlot,
             'watchingAnimes' => $watchingAnimes,
             'stats' => $stats,
             'badges' => $badges,
+            'chartData' => $this->getStatsDataProperty(), // <--- Cambiamo nome in chartData e chiamiamo direttamente il metodo
         ])->layout('layouts.app');
     }
 
     public bool $showFollowModal = false;
-    public string $followModalType = 'followers'; // 'followers' oppure 'following'
+    public string $followModalType = 'followers';
     public $followModalUsers = [];
 
     public function openFollowModal(string $type): void
@@ -152,7 +149,6 @@ class ShowProfile extends Component
         }
     }
 
-    // Aggiorna anche il metodo toggleFollow per ricaricare la modal se è aperta
     public function toggleFollowFromModal(int $targetUserId): void
     {
         if (!auth()->check()) {
@@ -164,5 +160,92 @@ class ShowProfile extends Component
 
         $this->updateFollowStats();
         $this->loadFollowModalUsers();
+    }
+
+    private function normalizeMetadataList(mixed $value): array
+    {
+        if (is_array($value)) {
+            return array_values(array_filter(array_map('trim', $value)));
+        }
+
+        if (!is_string($value)) {
+            return [];
+        }
+
+        $value = trim($value);
+        if ($value === '') {
+            return [];
+        }
+
+        $decoded = json_decode($value, true);
+        if (is_array($decoded)) {
+            return array_values(array_filter(array_map(static fn ($item) => trim((string) $item), $decoded)));
+        }
+
+        return array_values(array_filter(array_map(static fn ($item) => trim($item), explode(',', $value))));
+    }
+
+    public function getStatsDataProperty(): array
+    {
+        // 1. Estraiamo gli ID degli anime presenti nei tracker dell'utente
+        $malIds = EpisodeTracker::where('user_id', $this->user?->id)
+            ->pluck('mal_id')
+            ->filter()
+            ->unique();
+
+        // 2. Query diretta su AnimeMetadata per recuperare generi e studi
+        $animes = AnimeMetadata::whereIn('mal_id', $malIds)->get();
+
+        $genresCount = [];
+        $studiosCount = [];
+
+        foreach ($animes as $anime) {
+            // Conta Generi
+            if (!empty($anime->genres)) {
+                $genres = $this->normalizeMetadataList($anime->genres);
+                foreach ($genres as $genre) {
+                    $genreName = trim($genre);
+                    if ($genreName) {
+                        $genresCount[$genreName] = ($genresCount[$genreName] ?? 0) + 1;
+                    }
+                }
+            }
+
+            // Conta Studi
+            if (!empty($anime->studios)) {
+                $studios = $this->normalizeMetadataList($anime->studios);
+                foreach ($studios as $studio) {
+                    $studioName = trim($studio);
+                    if ($studioName) {
+                        $studiosCount[$studioName] = ($studiosCount[$studioName] ?? 0) + 1;
+                    }
+                }
+            }
+        }
+
+        arsort($genresCount);
+        arsort($studiosCount);
+
+        $topGenres = array_slice($genresCount, 0, 5);
+        $topStudios = array_slice($studiosCount, 0, 5);
+
+        // Fallback non nullo: evita grafici visivamente vuoti quando non ci sono dati reali.
+        if (empty($topGenres)) {
+            $topGenres = ['Nessun dato' => 1];
+        }
+        if (empty($topStudios)) {
+            $topStudios = ['Nessun dato' => 1];
+        }
+
+        return [
+            'genres' => [
+                'labels' => array_keys($topGenres),
+                'data' => array_values($topGenres),
+            ],
+            'studios' => [
+                'labels' => array_keys($topStudios),
+                'data' => array_values($topStudios),
+            ]
+        ];
     }
 }

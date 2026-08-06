@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EpisodeTracker extends Model
 {
@@ -20,4 +21,11 @@ class EpisodeTracker extends Model
     protected $casts = [
         'watched_details' => 'array',
     ];
+
+    // Dentro la classe EpisodeTracker:
+    public function animeMetadata(): BelongsTo
+    {
+        // Collega mal_id o anime_id di EpisodeTracker con mal_id di AnimeMetadata
+        return $this->belongsTo(AnimeMetadata::class, 'mal_id', 'mal_id');
+    }
 }
