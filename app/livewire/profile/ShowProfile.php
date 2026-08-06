@@ -17,11 +17,27 @@ class ShowProfile extends Component
         'refreshProfile'  => '$refresh'
     ];
 
+    public bool $isFollowing = false;
+    public int $followersCount = 0;
+    public int $followingCount = 0;
+
     public function mount(?int $userId = null): void
     {
         $this->user = $userId
-            ? User::with(['profile.favoriteAnimes'])->findOrFail($userId)
-            : auth()->user()->load(['profile.favoriteAnimes']);
+            ? User::with(['profile.favoriteAnimes', 'followers', 'following'])->findOrFail($userId)
+            : auth()->user()->load(['profile.favoriteAnimes', 'followers', 'following']);
+
+        $this->updateFollowStats();
+    }
+
+    private function updateFollowStats(): void
+    {
+        $this->followersCount = $this->user->followers()->count();
+        $this->followingCount = $this->user->following()->count();
+
+        if (auth()->check()) {
+            $this->isFollowing = auth()->user()->isFollowing($this->user);
+        }
     }
 
     public function setTab(string $tab): void
@@ -109,5 +125,44 @@ class ShowProfile extends Component
             'stats' => $stats,
             'badges' => $badges,
         ])->layout('layouts.app');
+    }
+
+    public bool $showFollowModal = false;
+    public string $followModalType = 'followers'; // 'followers' oppure 'following'
+    public $followModalUsers = [];
+
+    public function openFollowModal(string $type): void
+    {
+        $this->followModalType = $type;
+        $this->loadFollowModalUsers();
+        $this->showFollowModal = true;
+    }
+
+    public function closeFollowModal(): void
+    {
+        $this->showFollowModal = false;
+    }
+
+    public function loadFollowModalUsers(): void
+    {
+        if ($this->followModalType === 'followers') {
+            $this->followModalUsers = $this->user->followers()->with('profile')->get();
+        } else {
+            $this->followModalUsers = $this->user->following()->with('profile')->get();
+        }
+    }
+
+    // Aggiorna anche il metodo toggleFollow per ricaricare la modal se è aperta
+    public function toggleFollowFromModal(int $targetUserId): void
+    {
+        if (!auth()->check()) {
+            return;
+        }
+
+        $targetUser = User::findOrFail($targetUserId);
+        auth()->user()->toggleFollow($targetUser);
+
+        $this->updateFollowStats();
+        $this->loadFollowModalUsers();
     }
 }

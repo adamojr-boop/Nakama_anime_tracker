@@ -108,4 +108,34 @@ class User extends Authenticatable
             'social_links'   => []
         ]);
     }
+    /**
+     * Utenti che seguono questo utente.
+     */
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')->withTimestamps();
+    }
+    /**
+     * Utenti seguiti da questo utente.
+     */
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')->withTimestamps();
+    }
+    /**
+     * Verifica se l'utente attuale segue un altro utente.
+     */
+    public function isFollowing(User $user): bool
+    {
+        return $this->following()->where('following_id', $user->id)->exists();
+    }
+
+    public function toggleFollow(User $user)
+    {
+        if ($this->id === $user->id) {
+            return; // Impedisce di seguire se stessi
+        }
+
+        return $this->following()->toggle($user->id);
+    }
 }

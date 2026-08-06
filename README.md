@@ -1,5 +1,10 @@
 # Doing
 
+## 4. Esperienza Utente, Profilo & Blog
+
+* **Infografiche & Statistiche Avanzate:**
+  * Grafici interattivi (a torta e temporali) per visualizzare generi più visti, anno medio di produzione dei media e fedeltà a studi/registi.
+
 
 -----------------------------------------------------
 
@@ -21,10 +26,3 @@
 * **Algoritmo di Affinità Tra Utenti:**
   * Calcolo percentuale di compatibilità ("Affinità") tra due profili analizzando generi preferiti e reazioni emotive condivise.
 -----------------------------------------------------
-## 4. Esperienza Utente, Profilo & Blog
-
-* **Infografiche & Statistiche Avanzate:**
-  * Grafici interattivi (a torta e temporali) per visualizzare generi più visti, anno medio di produzione dei media e fedeltà a studi/registi.
-* **UX Sociale & Community:**
-  * Sistema *"Segui"* per monitorare le attività e le liste dei propri contatti.
-  * Sezione *"Chiacchiere"* (Forum/Blog) per discussioni libere e integrazione con un server Discord dedicato.

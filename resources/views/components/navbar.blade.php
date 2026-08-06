@@ -28,6 +28,11 @@
                     <a class="nav-link {{ request()->routeIs('user.lists') ? 'active fw-bold text-primary' : '' }}" href="{{ route('user.lists') }}">Le mie Liste</a>
                 </li>
 
+                <a href="{{ route('community.index') }}" class="nav-link text-white {{ request()->routeIs('community.*') ? 'active fw-bold' : '' }}">
+                    👥 Community
+                </a>
+                
+                @livewire('user-search')
                 <livewire:anime-recommendation-modal />
 
                 <!-- DROPDOWN PROFILO UTENTE -->

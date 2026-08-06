@@ -10,6 +10,7 @@ use App\Livewire\Profile\ShowProfile;
 use App\Livewire\ShowAnime;
 use App\Livewire\UserDashboard;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\CommunityIndex;
 
 Route::view('/', 'livewire.home')->name('home');
 Route::get('/anime/{id}', ShowAnime::class)->name('anime.show');
@@ -35,4 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', ShowProfile::class)->name('profile.show');
     Route::get('/profile/edit', EditProfile::class)->name('profile.edit');
     Route::get('/profile/{userId}', ShowProfile::class)->name('profile.user');
+
+    // ROTTA COMMUNITY
+    Route::get('/community', CommunityIndex::class)->name('community.index');
 });

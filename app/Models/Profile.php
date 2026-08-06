@@ -9,13 +9,15 @@ class Profile extends Model
 {
     use HasFactory;
 
+    // app/Models/Profile.php
+
     protected $fillable = [
         'user_id',
+        'bio',
         'avatar',
         'banner',
-        'avatar_frame',
         'banner_pattern',
-        'bio',
+        'avatar_frame',
         'social_links',
     ];
 

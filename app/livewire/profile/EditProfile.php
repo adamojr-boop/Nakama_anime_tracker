@@ -12,6 +12,7 @@ class EditProfile extends Component
 
     public $avatar;
     public $banner;
+    public string $name = '';
     public string $avatarFrame = 'default';
     public string $bannerPattern = 'pattern-1';
     public string $bio = '';
@@ -24,7 +25,9 @@ class EditProfile extends Component
 
     public function mount(): void
     {
-        $profile = auth()->user()->profile;
+        $user = auth()->user();
+        $this->name = (string) $user->name;
+        $profile = $user->profile;
 
         if ($profile) {
             $this->avatarFrame = $profile->avatar_frame ?? 'default';
@@ -53,20 +56,22 @@ class EditProfile extends Component
 
     public function save()
     {
-        $this->validate([
-            'avatar' => 'nullable|image|max:2048', // max 2MB
-            'banner' => 'nullable|image|max:4096', // max 4MB
-            'bio' => 'nullable|string|max:300',
-            'discord' => 'nullable|string|max:50',
-            'twitter' => 'nullable|string|max:100',
-            'instagram' => 'nullable|string|max:100',
-            'mal' => 'nullable|string|max:100',
-        ]);
-
         $user = auth()->user();
         $profile = $user->profile()->firstOrCreate(['user_id' => $user->id]);
 
-        // Caricamento Avatar
+        $this->name = trim($this->name);
+
+        $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'avatar' => 'nullable|image|max:2048',
+            'banner' => 'nullable|image|max:4096',
+            'bio' => 'nullable|string|max:500',
+        ]);
+
+        $user->name = $this->name;
+        $user->save();
+
+        // 3. Caricamento Avatar
         if ($this->avatar) {
             if ($profile->avatar) {
                 Storage::disk('public')->delete($profile->avatar);
@@ -76,7 +81,7 @@ class EditProfile extends Component
             $this->avatar = null;
         }
 
-        // Caricamento Banner
+        // 4. Caricamento Banner
         if ($this->banner) {
             if ($profile->banner) {
                 Storage::disk('public')->delete($profile->banner);
@@ -100,7 +105,6 @@ class EditProfile extends Component
 
         session()->flash('success', 'Profilo aggiornato con successo!');
 
-        // REINDIRIZZO DIRETTAMENTE AL PROFILO PUBBLICO/PRIVATO DELL'UTENTE
         return redirect()->route('profile.show');
     }
 

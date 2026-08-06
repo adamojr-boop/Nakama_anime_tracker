@@ -70,15 +70,28 @@ default => 'border: 3px solid #ffffff;',
 
                             <div class="position-absolute bottom-0 start-0 m-3 d-flex align-items-center">
                                 <img src="{{ $avatarUrl }}" class="rounded-circle" style="width: 70px; height: 70px; object-fit: cover; background-color: #1a1a1a; {{ $frameStyle }}">
-                                <span class="ms-3 fw-bold fs-5 text-white text-shadow">{{ auth()->user()->name }}</span>
+                                <span class="ms-3 fw-bold fs-5 text-white text-shadow">{{ $name ?: auth()->user()->name }}</span>
                             </div>
                         </div>
                     </div>
 
                     <form wire:submit.prevent="save">
+                        <div class="mb-3">
+                            <label for="name" class="form-label text-white fw-bold">Username</label>
+                            <input
+                                type="text"
+                                id="name"
+                                wire:model="name"
+                                class="form-control bg-dark text-white border-secondary @error('name') is-invalid @enderror"
+                                placeholder="Il tuo nome">
+                            @error('name')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <!-- BANNER & PATTERN -->
                         <div class="mb-4 p-3 rounded bg-secondary bg-opacity-10 border border-secondary border-opacity-25">
-                            <label class="form-label fw-bold">1. Banner con Immagine Custom</label>
+                            <label class="form-label fw-bold">Banner Custom</label>
                             <input type="file" wire:model="banner" class="form-control bg-secondary text-white border-0 mb-2" accept="image/*">
                             <div wire:loading wire:target="banner" class="text-info small mb-2">Caricamento anteprima banner...</div>
                             @error('banner') <span class="text-danger small d-block mb-2">{{ $message }}</span> @enderror
@@ -91,8 +104,8 @@ default => 'border: 3px solid #ffffff;',
 
                             <hr class="border-secondary opacity-25 my-3">
 
-                            <label class="form-label fw-bold mb-1">2. Oppure Pattern Sfの内 (Default/Fallback)</label>
-                            <p class="small text-muted mb-2">Se non hai caricato un'immagine personalizzata, verrà mostrato il pattern scelto qui sotto:</p>
+                            <label class="form-label fw-bold mb-1">Pattern Sfの内</label>
+                            <p class="small text-white mb-2">Se non hai caricato un'immagine personalizzata, verrà mostrato il pattern scelto qui sotto:</p>
 
                             <select wire:model.live="bannerPattern" class="form-select bg-secondary text-white border-0">
                                 <option value="pattern-1">🌆 Cyberpunk Tokyo</option>
@@ -120,10 +133,9 @@ default => 'border: 3px solid #ffffff;',
                                 </select>
                             </div>
                         </div>
-
                         <!-- BIOGRAFIA -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">Biografia Breve</label>
+                            <label class="form-label fw-bold">Biografia</label>
                             <textarea wire:model="bio" rows="3" class="form-control bg-secondary text-white border-0" placeholder="Scrivi qualcosa su di te..."></textarea>
                             @error('bio') <span class="text-danger small d-block">{{ $message }}</span> @enderror
                         </div>

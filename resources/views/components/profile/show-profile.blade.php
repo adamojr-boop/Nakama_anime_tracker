@@ -52,13 +52,33 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
                     <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
                         <div>
                             <h2 class="fw-bold mb-0 text-white">{{ $user->name }}</h2>
-                            <span class="text-muted small">@nakama_{{ $user->id }} • Iscritto dal {{ $user->created_at->format('M Y') }}</span>
+                            <span class="text-muted small">
+                                Iscritto dal {{ $user->created_at->format('M Y') }}
+                            </span>
+
+                            <!-- CONTATORI FOLLOWERS / FOLLOWING (CLICCABILI) -->
+                            <div class="d-flex align-items-center gap-3 mt-2 justify-content-center justify-content-md-start">
+                                <span wire:click="openFollowModal('followers')" class="small text-light-50" style="cursor: pointer;">
+                                    <strong class="text-white">{{ $followersCount }}</strong> Follower
+                                </span>
+                                <span class="text-muted">•</span>
+                                <span wire:click="openFollowModal('following')" class="small text-light-50" style="cursor: pointer;">
+                                    <strong class="text-white">{{ $followingCount }}</strong> Seguiti
+                                </span>
+                            </div>
                         </div>
 
+                        <!-- PULSANTE FOLLOW/UNFOLLOW DINAMICO -->
                         @if(auth()->id() !== $user->id)
                         <div class="mt-3 mt-md-0">
-                            <button class="btn btn-primary btn-sm px-4 fw-bold rounded-pill">
-                                ➕ Segui
+                            <button
+                                wire:click="toggleFollow"
+                                wire:loading.attr="disabled"
+                                class="btn btn-sm px-4 fw-bold rounded-pill shadow-sm transition-all {{ $isFollowing ? 'btn-outline-secondary text-white' : 'btn-primary' }}">
+                                <span wire:loading.remove wire:target="toggleFollow">
+                                    {{ $isFollowing ? '✔️ Segui già' : '➕ Segui' }}
+                                </span>
+                                <span wire:loading wire:target="toggleFollow" class="spinner-border spinner-border-sm" role="status"></span>
                             </button>
                         </div>
                         @endif
@@ -91,7 +111,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
         </div>
     </div>
 
-    <!-- VETRINA DEI PREFERITI (INDEPENDENTE E COLLAPSABILE) -->
+    <!-- VETRINA DEI PREFERITI -->
     <div x-data="{ open: true }" class="card bg-dark text-white border-secondary shadow-sm mb-4 rounded-4 overflow-hidden">
         <div class="card-header bg-dark border-0 d-flex align-items-center justify-content-between p-3">
             <div class="d-flex align-items-center gap-2 cursor-pointer" @click="open = !open">
@@ -170,7 +190,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
     </div>
 
     <div class="card-body p-4">
-        <!-- CONTENUTO TAB 1: IN CORSO -->
+        <!-- TAB 1: IN CORSO -->
         @if($activeTab === 'showcase')
         @php
         $watchingAnimes = $watchingAnimes ?? collect();
@@ -220,7 +240,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
         </div>
         @endif
 
-        <!-- CONTENUTO TAB 2: STATISTICHE -->
+        <!-- TAB 2: STATISTICHE -->
         @if($activeTab === 'stats')
         <h5 class="fw-bold mb-3">📊 Statistiche di Visione</h5>
         <div class="row g-3">
@@ -251,7 +271,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
         </div>
         @endif
 
-        <!-- CONTENUTO TAB 3: TROFEI & BADGE -->
+        <!-- TAB 3: BADGE -->
         @if($activeTab === 'badges')
         <h5 class="fw-bold mb-3 text-white">🏆 Bacheca Badge Sbloccati</h5>
         <div class="row g-3">
@@ -287,4 +307,55 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
 </div>
 
 @livewire('profile.favorite-selector')
+
+<!-- MODAL FOLLOWERS / FOLLOWING -->
+@if($showFollowModal)
+<div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.7);" id="followModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content bg-dark text-white border-secondary rounded-4 shadow-lg">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title fw-bold">
+                    {{ $followModalType === 'followers' ? '👥 Follower' : '👤 Utenti Seguiti' }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" wire:click="closeFollowModal"></button>
+            </div>
+
+            <div class="modal-body p-3">
+                <div class="d-flex flex-column gap-2">
+                    @forelse($followModalUsers as $modalUser)
+                    @php
+                    $userAvatar = $modalUser->profile && $modalUser->profile->avatar
+                    ? asset('storage/' . $modalUser->profile->avatar)
+                    : 'https://ui-avatars.com/api/?name=' . urlencode($modalUser->name) . '&background=0d6efd&color=fff';
+
+                    $isFollowingModalUser = auth()->check() && auth()->user()->isFollowing($modalUser);
+                    @endphp
+
+                    <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-secondary bg-opacity-10 border border-secondary border-opacity-25">
+                        <a href="{{ route('profile.show', $modalUser->id) }}" class="d-flex align-items-center gap-3 text-decoration-none text-white">
+                            <img src="{{ $userAvatar }}" class="rounded-circle" style="width: 42px; height: 42px; object-fit: cover;">
+                            <div>
+                                <h6 class="fw-bold mb-0 text-white fs-6">{{ $modalUser->name }}</h6>
+                            </div>
+                        </a>
+
+                        @if(auth()->check() && auth()->id() !== $modalUser->id)
+                        <button
+                            wire:click="toggleFollowFromModal({{ $modalUser->id }})"
+                            class="btn btn-xs btn-sm rounded-pill px-3 fw-bold {{ $isFollowingModalUser ? 'btn-outline-secondary text-white' : 'btn-primary' }}">
+                            {{ $isFollowingModalUser ? 'Segui già' : 'Segui' }}
+                        </button>
+                        @endif
+                    </div>
+                    @empty
+                    <div class="text-center text-muted py-4">
+                        Nessun utente trovato.
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 </div>
