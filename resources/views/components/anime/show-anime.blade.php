@@ -31,6 +31,25 @@
                 </p>
             </div>
         </div>
+
+        <!-- Valutazione + Discussione Episodio (Collassabile) -->
+        <div class="mt-4" x-data="{ openEpisodePanel: true }">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h5 class="mb-0 fw-bold">Valutazione e Discussione Episodio</h5>
+                <button type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    @click="openEpisodePanel = !openEpisodePanel">
+                    <span x-text="openEpisodePanel ? 'Chiudi' : 'Apri'"></span>
+                </button>
+            </div>
+
+            <div x-show="openEpisodePanel" x-transition>
+                <livewire:episodes.rate-episode
+                    :anime-mal-id="data_get($anime, 'mal_id')"
+                    :episode-number="1" />
+            </div>
+        </div>
+
         <!-- Sezione Recensioni -->
         <div class="row mt-4">
             <div class="col-12">
