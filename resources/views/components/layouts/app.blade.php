@@ -23,11 +23,13 @@
     @livewireStyles
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <x-navbar />
 
-    {{ $slot ?? '' }}
+    <main class="flex-grow-1">
+        {{ $slot ?? '' }}
+    </main>
 
     <x-footer />
 

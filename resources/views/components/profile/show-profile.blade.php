@@ -244,6 +244,27 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
 
         <!-- TAB 2: STATISTICHE -->
         @if($activeTab === 'stats')
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="border border-secondary rounded-3 p-3 text-center h-100">
+                    <span class="d-block small text-secondary">Anime Completati</span>
+                    <strong class="fs-4">{{ $stats['total_completed'] }}</strong>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="border border-secondary rounded-3 p-3 text-center h-100">
+                    <span class="d-block small text-secondary">Episodi Visti</span>
+                    <strong class="fs-4">{{ $stats['episodes_watched'] }}</strong>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="border border-secondary rounded-3 p-3 text-center h-100">
+                    <span class="d-block small text-secondary">Tempo Totale</span>
+                    <strong class="fs-4">{{ $stats['time_watched_hours'] }}h</strong>
+                </div>
+            </div>
+        </div>
+
         <div
             id="profile-stats-charts"
             class="row g-4 mt-2"

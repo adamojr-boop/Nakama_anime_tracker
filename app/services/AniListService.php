@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class AniListService
 {
@@ -43,10 +43,13 @@ class AniListService
             'airingAtGreater' => Carbon::now()->timestamp, // Solamente gli episodi da adesso in poi
         ];
 
-        $response = Http::post($this->endpoint, [
-            'query' => $query,
-            'variables' => $variables,
-        ]);
+        $response = Http::timeout(8)
+            ->connectTimeout(3)
+            ->retry(2, 500)
+            ->post($this->endpoint, [
+                'query' => $query,
+                'variables' => $variables,
+            ]);
 
         if ($response->successful()) {
             return $response->json('data.Page.airingSchedules') ?? [];
