@@ -13,6 +13,7 @@ class EpisodeComment extends Model
         'anime_mal_id',
         'episode_number',
         'body',
+        'is_spoiler', 
         'parent_id',
     ];
 

@@ -121,7 +121,7 @@ class ShowProfile extends Component
             'stats' => $stats,
             'badges' => $badges,
             'chartData' => $this->getStatsDataProperty(), // <--- Cambiamo nome in chartData e chiamiamo direttamente il metodo
-        ])->layout('layouts.app');
+        ])->layout('components.layouts.app');
     }
 
     public bool $showFollowModal = false;

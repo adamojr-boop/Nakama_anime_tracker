@@ -110,6 +110,6 @@ class EditProfile extends Component
 
     public function render()
     {
-        return view('components.profile.edit-profile')->layout('layouts.app');
+        return view('components.profile.edit-profile')->layout('components.layouts.app');
     }
 }

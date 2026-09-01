@@ -36,10 +36,13 @@ class RateEpisode extends Component
         'hype' => ['label' => 'Hype', 'emoji' => '⚡'],
     ];
 
+    public bool $isSpoiler = false;
+
     protected array $commentRules = [
         'body' => 'required|string|max:1000',
         'image' => 'nullable|image|max:2048',
         'gifUrl' => 'nullable|url',
+        'isSpoiler' => 'boolean',
     ];
 
     public function mount(int $animeMalId, int $episodeNumber): void
@@ -117,6 +120,7 @@ class RateEpisode extends Component
             'anime_mal_id' => $this->animeMalId,
             'episode_number' => $this->episodeNumber,
             'body' => $this->body,
+            'is_spoiler' => $this->isSpoiler, // <--- 1. Salviamo il valore a DB
             'parent_id' => $this->parentId,
         ]);
 
@@ -135,7 +139,8 @@ class RateEpisode extends Component
             ]);
         }
 
-        $this->reset(['body', 'image', 'gifUrl', 'timestampInput', 'parentId']);
+        // 2. Aggiungiamo 'isSpoiler' per resettare il checkbox dopo l'invio
+        $this->reset(['body', 'image', 'gifUrl', 'timestampInput', 'parentId', 'isSpoiler']);
         session()->flash('comment_success', 'Commento pubblicato!');
     }
 
@@ -191,7 +196,7 @@ class RateEpisode extends Component
             ->orderBy('name')
             ->limit(6)
             ->get(['id', 'name'])
-            ->map(fn (User $user) => ['id' => $user->id, 'name' => $user->name])
+            ->map(fn(User $user) => ['id' => $user->id, 'name' => $user->name])
             ->all();
     }
 

@@ -86,6 +86,8 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
                 </div>
             </div>
 
+            <livewire:user-affinity-badge :profileUserId="$user->id" />
+
             <div class="my-3">
                 <p class="card-text text-light-50 mb-0" style="max-width: 700px; line-height: 1.6;">
                     {{ $profile->bio ?? 'Nessuna biografia aggiunta.' }}

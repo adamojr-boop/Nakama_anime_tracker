@@ -12,10 +12,13 @@ class AnimeReviews extends Component
     public $animeId;
     public $comment = '';
     public $rating = 5;
+    public $isSpoiler = false;
+    public array $revealedReviewIds = [];
     // Regole di validazione per il form
     protected $rules = [
         'comment' => 'required|string|min:5|max:1000',
         'rating' => 'required|integer|min:1|max:10',
+        'isSpoiler' => 'boolean',
     ];
 
     public function mount($animeId)
@@ -37,6 +40,7 @@ class AnimeReviews extends Component
             'mal_id'  => $this->animeId,
             'comment' => $this->comment,
             'rating'  => $this->rating,
+            'is_spoiler' => $this->isSpoiler,
         ]);
 
         $this->reset('comment');
@@ -50,6 +54,13 @@ class AnimeReviews extends Component
 
         if (!empty($newBadges)) {
             session()->flash('badge_unlocked', '🏆 Nuovo Trofeo Social Sbloccato: ' . implode(', ', $newBadges));
+        }
+    }
+
+    public function revealReview(int $reviewId): void
+    {
+        if (!in_array($reviewId, $this->revealedReviewIds, true)) {
+            $this->revealedReviewIds[] = $reviewId;
         }
     }
 

@@ -1,0 +1,9 @@
+.filter-blur {
+    filter: blur(8px);
+    user-select: none;
+    pointer-events: none;
+}
+
+.navbar-collapse.collapse.show {
+    visibility: visible;
+}

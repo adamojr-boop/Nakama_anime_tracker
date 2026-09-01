@@ -27,6 +27,6 @@ class CommunityIndex extends Component
 
         return view('components.community.community-index', [
             'users' => $users,
-        ])->layout('layouts.app');
+        ])->layout('components.layouts.app');
     }
 }
