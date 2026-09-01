@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Models\AnimeMetadata;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 
@@ -10,45 +12,63 @@ class AnimeSearch extends Component
     public $searchQuery = '';
     public $results = [];
 
-    // Questo metodo si attiva automaticamente ogni volta che l'utente scrive qualcosa
     public function updatedSearchQuery()
     {
-        if (strlen($this->searchQuery) < 3) {
+        $query = trim($this->searchQuery);
+
+        if (mb_strlen($query) < 3) {
             $this->results = [];
             return;
         }
 
+        $cacheKey = 'anime-search:v2:' . sha1(mb_strtolower($query));
+        if (Cache::has($cacheKey)) {
+            $this->results = Cache::get($cacheKey);
+            return;
+        }
+
+        $externalResults = $this->searchExternal($query);
+
+        if ($externalResults !== null) {
+            Cache::put($cacheKey, $externalResults, now()->addMinutes(5));
+            $this->results = $externalResults;
+            return;
+        }
+
+        $this->results = $this->searchLocal($query);
+    }
+
+    private function searchExternal(string $query): ?array
+    {
         try {
-            // Canale Principale: Proviamo con Jikan (Timeout ridotto a 3 secondi per essere più reattivi)
-            $response = Http::timeout(3)->get("https://api.jikan.moe/v4/anime", [
-                'q' => $this->searchQuery,
+            $response = Http::timeout(3)
+                ->connectTimeout(1)
+                ->get('https://api.jikan.moe/v4/anime', [
+                'q' => $query,
                 'limit' => 5
             ]);
 
             if ($response->successful()) {
-                $this->results = $response->json()['data'] ?? [];
-                return; // Se ha successo, usciamo dal metodo felici
+                return $response->json('data', []);
             }
 
-            // Se risponde ma con un errore (es. errore 429), lanciamo un'eccezione per attivare il Piano B
-            throw new \Exception("Jikan ha risposto con errore.");
+            throw new \RuntimeException('Jikan ha risposto con errore.');
         } catch (\Exception $e) {
-            // 🚨 PIANO B: Jikan è offline o in timeout. Interroghiamo KITSU API!
             logger('Jikan Fallito. Attivazione Fallback su Kitsu API. Errore: ' . $e->getMessage());
 
             try {
-                $kitsuResponse = Http::timeout(4)->get("https://kitsu.io/api/edge/anime", [
-                    'filter[text]' => $this->searchQuery,
+                $kitsuResponse = Http::timeout(3)
+                    ->connectTimeout(1)
+                    ->get('https://kitsu.io/api/edge/anime', [
+                    'filter[text]' => $query,
                     'page[limit]' => 5
                 ]);
 
                 if ($kitsuResponse->successful()) {
                     $kitsuData = $kitsuResponse->json()['data'] ?? [];
 
-                    // Dobbiamo "mappare" i dati di Kitsu per farli combaciare con la struttura di Jikan usata nella vista Blade
-                    $this->results = array_map(function ($item) {
+                    return array_map(function ($item) {
                         return [
-                            // Usiamo l'ID di Kitsu come temporaneo, o l'id originale se presente
                             'mal_id' => $item['id'],
                             'title' => $item['attributes']['canonicalTitle'] ?? 'Titolo Sconosciuto',
                             'type' => strtoupper($item['attributes']['showType'] ?? 'TV'),
@@ -63,11 +83,30 @@ class AnimeSearch extends Component
                     }, $kitsuData);
                 }
             } catch (\Exception $kitsuException) {
-                // Se purtroppo falliscono entrambi i server
-                $this->results = [];
                 logger('Anche Kitsu API è offline: ' . $kitsuException->getMessage());
             }
         }
+
+        return null;
+    }
+
+    private function searchLocal(string $query): array
+    {
+        return AnimeMetadata::query()
+            ->where('title', 'like', "%{$query}%")
+            ->limit(5)
+            ->get()
+            ->map(fn (AnimeMetadata $anime) => [
+                'mal_id' => $anime->mal_id,
+                'title' => $anime->title,
+                'type' => 'TV',
+                'episodes' => $anime->total_episodes ?? '?',
+                'score' => 'N/D',
+                'images' => [
+                    'jpg' => ['small_image_url' => $anime->image_url ?? 'https://via.placeholder.com/40x55'],
+                ],
+            ])
+            ->all();
     }
 
     public function render()

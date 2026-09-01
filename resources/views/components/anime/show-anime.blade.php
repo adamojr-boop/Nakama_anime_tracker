@@ -29,6 +29,10 @@
                 <p class="text-muted" style="line-height: 1.6;">
                     {{ $anime['synopsis'] ?? 'Nessuna trama disponibile per questo anime.' }}
                 </p>
+
+                <livewire:anime-streaming-providers
+                    :mal-id="$anime['mal_id']"
+                    :title="$anime['title']" />
             </div>
         </div>
 

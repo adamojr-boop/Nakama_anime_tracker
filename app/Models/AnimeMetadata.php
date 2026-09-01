@@ -15,6 +15,10 @@ class AnimeMetadata extends Model
         'total_episodes',
         'genres',
         'studios',
+        'tmdb_id',
+        'streaming_providers',
+        'trailer_url',
+        'streaming_synced_at',
         'source',
         'last_synced_at',
     ];
@@ -22,6 +26,8 @@ class AnimeMetadata extends Model
     protected $casts = [
         'genres' => 'array',
         'studios' => 'array',
+        'streaming_providers' => 'array',
         'last_synced_at' => 'datetime',
+        'streaming_synced_at' => 'datetime',
     ];
 }
