@@ -1,9 +1,9 @@
-<div class="card bg-dark text-white p-4 shadow-sm border-secondary"
+<div class="card p-4 shadow-sm border-secondary"
     x-data="{ openRating: true, openDiscussion: true, composerMenuOpen: false, activePicker: null }">
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="mb-0 fw-bold">⭐ Valutazione Episodio {{ $episodeNumber }}</h5>
         <button type="button"
-            class="btn btn-sm btn-outline-light"
+            class="btn btn-sm btn-outline-secondary"
             @click="openRating = !openRating">
             <span x-text="openRating ? 'Chiudi' : 'Apri'"></span>
         </button>
@@ -51,7 +51,7 @@
                 <input type="text"
                     id="favorite_character"
                     wire:model="favorite_character"
-                    class="form-control bg-dark text-white border-secondary"
+                    class="form-control border-secondary"
                     placeholder="Es. Eren Yeager, Gojo Satoru...">
                 @error('favorite_character') <span class="text-danger small d-block mt-1">{{ $message }}</span> @enderror
             </div>
@@ -67,7 +67,7 @@
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="mb-0 fw-bold">💬 Discussione Episodio {{ $episodeNumber }}</h5>
         <button type="button"
-            class="btn btn-sm btn-outline-light"
+            class="btn btn-sm btn-outline-secondary"
             @click="openDiscussion = !openDiscussion">
             <span x-text="openDiscussion ? 'Chiudi' : 'Apri'"></span>
         </button>
@@ -92,13 +92,13 @@
             <div class="mb-2 position-relative">
                 <textarea wire:model.live="body"
                     rows="3"
-                    class="form-control bg-dark text-white border-secondary shadow-none"
+                    class="form-control border-secondary shadow-none"
                     placeholder="Scrivi un commento... Usa @ per taggare"></textarea>
                 @error('body') <span class="text-danger small">{{ $message }}</span> @enderror
 
                 @if (!empty($this->mentionSuggestions))
-                <div class="position-absolute start-0 end-0 mt-1 p-2 rounded border border-secondary bg-black z-3">
-                    <div class="small text-white mb-1">Tag suggeriti</div>
+                <div class="position-absolute start-0 end-0 mt-1 p-2 rounded border border-secondary bg-body-secondary z-3">
+                    <div class="small mb-1">Tag suggeriti</div>
                     <div class="d-flex flex-wrap gap-2">
                         @foreach ($this->mentionSuggestions as $suggestion)
                         <button type="button"
@@ -129,25 +129,25 @@
                 <div x-show="composerMenuOpen"
                     x-transition
                     @click.outside="composerMenuOpen = false"
-                    class="position-absolute bottom-100 start-0 mb-2 p-2 bg-black rounded border border-secondary shadow-lg z-3">
+                    class="position-absolute bottom-100 start-0 mb-2 p-2 bg-body-secondary rounded border border-secondary shadow-lg z-3">
                     <div class="d-flex flex-column gap-2" style="min-width: 180px;">
                         <button type="button"
-                            class="btn btn-sm btn-outline-light text-start"
+                            class="btn btn-sm btn-outline-secondary text-start"
                             @click="$refs.commentImageInput.click(); composerMenuOpen = false; activePicker = null;">
                             📷 Immagine
                         </button>
                         <button type="button"
-                            class="btn btn-sm btn-outline-light text-start"
+                            class="btn btn-sm btn-outline-secondary text-start"
                             @click="activePicker = (activePicker === 'gif' ? null : 'gif'); composerMenuOpen = false;">
                             GIF Link
                         </button>
                         <button type="button"
-                            class="btn btn-sm btn-outline-light text-start"
+                            class="btn btn-sm btn-outline-secondary text-start"
                             @click="activePicker = (activePicker === 'timestamp' ? null : 'timestamp'); composerMenuOpen = false;">
                             ⏱ Timestamp
                         </button>
                         <button type="button"
-                            class="btn btn-sm btn-outline-light text-start"
+                            class="btn btn-sm btn-outline-secondary text-start"
                             @click="$wire.body = ($wire.body ? $wire.body + ' @' : '@'); composerMenuOpen = false; activePicker = null;">
                             👤 Tagga Utente
                         </button>
@@ -161,17 +161,17 @@
                 <label class="form-label small text-muted">URL GIF</label>
                 <input type="url"
                     wire:model="gifUrl"
-                    class="form-control form-control-sm bg-dark text-white border-secondary"
+                    class="form-control form-control-sm border-secondary"
                     placeholder="https://media.giphy.com/...">
                 @error('gifUrl') <span class="text-danger small">{{ $message }}</span> @enderror
             </div>
 
             <div class="mt-3" x-show="activePicker === 'timestamp'" x-transition>
-                <label class="form-label small text-white">Inserisci timestamp (mm:ss o hh:mm:ss)</label>
+                <label class="form-label small">Inserisci timestamp (mm:ss o hh:mm:ss)</label>
                 <div class="d-flex gap-2">
                     <input type="text"
                         wire:model="timestampInput"
-                        class="form-control form-control-sm bg-dark text-white border-secondary"
+                        class="form-control form-control-sm border-secondary"
                         placeholder="es. 12:34">
                     <button type="button" wire:click="addTimestamp" class="btn btn-sm btn-outline-warning">Aggiungi</button>
                 </div>
@@ -181,16 +181,16 @@
             <div class="d-flex gap-3 mt-3">
                 @if ($image)
                 <div class="position-relative">
-                    <span class="small text-white d-block mb-1">Immagine allegata:</span>
-                    <img src="{{ $image->temporaryUrl() }}" class="rounded img-thumbnail bg-dark border-secondary" style="max-height: 80px;">
+                    <span class="small d-block mb-1">Immagine allegata:</span>
+                    <img src="{{ $image->temporaryUrl() }}" class="rounded img-thumbnail bg-body-secondary border-secondary" style="max-height: 80px;">
                     <button type="button" wire:click="$set('image', null)" class="btn btn-danger btn-sm position-absolute top-0 end-0 py-0 px-1 rounded-circle" style="transform: translate(30%, -30%);">&times;</button>
                 </div>
                 @endif
 
                 @if ($gifUrl)
                 <div class="position-relative">
-                    <span class="small text-white d-block mb-1">GIF collegata:</span>
-                    <img src="{{ $gifUrl }}" class="rounded img-thumbnail bg-dark border-secondary" style="max-height: 80px;">
+                    <span class="small d-block mb-1">GIF collegata:</span>
+                    <img src="{{ $gifUrl }}" class="rounded img-thumbnail bg-body-secondary border-secondary" style="max-height: 80px;">
                     <button type="button" wire:click="$set('gifUrl', null)" class="btn btn-danger btn-sm position-absolute top-0 end-0 py-0 px-1 rounded-circle" style="transform: translate(30%, -30%);">&times;</button>
                 </div>
                 @endif
@@ -203,7 +203,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <div class="d-flex align-items-center gap-2">
                         <strong class="text-info">{{ $comment->user->name }}</strong>
-                        <span class="text-white small">• {{ $comment->created_at->diffForHumans() }}</span>
+                        <span class="text-body-secondary small">• {{ $comment->created_at->diffForHumans() }}</span>
                     </div>
                     @if ($comment->user_id === auth()->id())
                     <button wire:click="deleteComment({{ $comment->id }})" class="btn btn-sm btn-outline-danger py-0 px-2">Elimina</button>
@@ -221,7 +221,7 @@
                 @endforeach
 
                 <div class="mt-2">
-                    <button wire:click="setReplyTo({{ $comment->id }})" class="btn btn-sm btn-link text-decoration-none p-0 text-white">Rispondi</button>
+                    <button wire:click="setReplyTo({{ $comment->id }})" class="btn btn-sm btn-link text-decoration-none p-0">Rispondi</button>
                 </div>
 
                 @if ($comment->replies->count() > 0)
@@ -230,7 +230,7 @@
                     <div class="mb-2">
                         <div class="d-flex align-items-center gap-2">
                             <strong class="text-info small">{{ $reply->user->name }}</strong>
-                            <span class="text-white extra-small">{{ $reply->created_at->diffForHumans() }}</span>
+                            <span class="text-body-secondary extra-small">{{ $reply->created_at->diffForHumans() }}</span>
                         </div>
                         <p class="mb-1 small">{!! $this->formatBody($reply->body) !!}</p>
 
@@ -245,7 +245,7 @@
                 @endif
             </div>
             @empty
-            <p class="text-white text-center my-3">Nessun commento presente. Sii il primo a commentare questo episodio!</p>
+            <p class="text-muted text-center my-3">Nessun commento presente. Sii il primo a commentare questo episodio!</p>
             @endforelse
         </div>
     </div>

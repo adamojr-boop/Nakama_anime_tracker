@@ -9,7 +9,7 @@
                         🌐 Nakama Hub
                     </span>
                     <h1 class="fw-bold display-5 mb-2">Community & Chiacchiere</h1>
-                    <p class="text-light-50 fs-5 mb-4">
+                    <p class="text-white-50 fs-5 mb-4">
                         Connettiti con altri appassionati, entra nel nostro server Discord e partecipa alle discussioni del Forum.
                     </p>
 
@@ -45,7 +45,7 @@
     <!-- SEZIONE ESPLORA MEMBRI -->
     <div class="mb-5">
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <h4 class="fw-bold text-white mb-0">👥 {{ strlen($search) >= 2 ? 'Risultati Ricerca' : 'Membri della Community' }}</h4>
+            <h4 class="fw-bold mb-0">👥 {{ strlen($search) >= 2 ? 'Risultati Ricerca' : 'Membri della Community' }}</h4>
             <span class="text-muted small">{{ $users->count() }} utenti mostrati</span>
         </div>
 
@@ -54,13 +54,13 @@
             @php
             $avatar = $communityUser->profile && $communityUser->profile->avatar
             ? asset('storage/' . $communityUser->profile->avatar)
-            : 'https://ui-avatars.com/api/?name=' . urlencode($communityUser->name) . '&background=0d6efd&color=fff';
+            : 'https://ui-avatars.com/api/?name=' . urlencode($communityUser->name) . '&background=6c5ce7&color=fff';
             $isFollowing = auth()->check() && auth()->user()->isFollowing($communityUser);
             @endphp
 
             <div class="col">
-                <div class="card bg-dark text-white border-secondary rounded-4 h-100 shadow-sm text-center p-3">
-                    <a href="{{ route('profile.user', $communityUser->id) }}" class="text-decoration-none text-white">
+                <div class="card border-secondary rounded-4 h-100 shadow-sm text-center p-3">
+                    <a href="{{ route('profile.user', $communityUser->id) }}" class="text-decoration-none">
                         <img src="{{ $avatar }}" class="rounded-circle mb-2" style="width: 70px; height: 70px; object-fit: cover;">
                         <h6 class="fw-bold mb-0 text-truncate">{{ $communityUser->name }}</h6>
                     </a>
@@ -85,7 +85,7 @@
     </div>
 
     <!-- SEZIONE DISCUSSIONI / FORUM -->
-    <div class="card bg-dark text-white border-secondary shadow-sm rounded-4">
+    <div class="card border-secondary shadow-sm rounded-4">
         <div class="card-header border-secondary bg-transparent p-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
             <h4 class="fw-bold mb-0">💬 Bacheca Discussioni</h4>
 

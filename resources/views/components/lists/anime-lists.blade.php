@@ -1,6 +1,6 @@
 <div>
     <!-- Filtri Navigation Pills -->
-    <ul class="nav nav-pills mb-4 bg-light p-2 rounded-3 shadow-sm d-flex flex-wrap gap-1">
+    <ul class="nav nav-pills mb-4 bg-body-secondary p-2 rounded-3 shadow-sm d-flex flex-wrap gap-1">
         <li class="nav-item">
             <button wire:click="setFilter('watching')" class="nav-link fw-semibold {{ $currentFilter === 'watching' ? 'active bg-primary text-white' : 'text-secondary' }}">📺 In Corso</button>
         </li>
@@ -26,7 +26,7 @@
         @forelse($animeList as $anime)
         <div class="col-md-3 col-sm-6" wire:key="anime-{{ $anime['mal_id'] }}">
             <div class="card h-100 shadow-sm border-0 position-relative">
-                <a href="{{ route('anime.show', $anime['mal_id']) }}" class="text-decoration-none text-dark">
+                <a href="{{ route('anime.show', $anime['mal_id']) }}" class="text-decoration-none">
                     <img src="{{ $anime['image'] }}" class="card-img-top" style="height: 250px; object-fit: cover;" loading="lazy">
 
                     <div class="card-body p-2 text-center">

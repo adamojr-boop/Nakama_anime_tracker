@@ -1,4 +1,4 @@
-<div id="anime-tracker" class="card card-body shadow-sm mb-4 bg-light border-0">
+<div id="anime-tracker" class="card card-body shadow-sm mb-4 border-0">
     @auth
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0 text-secondary">🎬 Selezione Episodi Visti</h5>
@@ -27,7 +27,7 @@
         </div>
     </div>
     <!-- DROPDOWN PER CAMBIARE STATO -->
-    <div class="d-flex align-items-center justify-content-between mb-3 bg-white p-2 rounded shadow-sm">
+    <div class="d-flex align-items-center justify-content-between mb-3 bg-body-secondary p-2 rounded shadow-sm">
         <div class="d-flex align-items-center gap-2">
             <span class="small fw-bold text-muted text-uppercase ms-1">Stato Visione:</span>
             <div class="dropdown">
@@ -71,7 +71,7 @@
         @if($currentStatus === 'completed')
         <button wire:click="startRewatch"
             wire:confirm="Vuoi davvero ricominciare questo anime? Gli episodi verranno resettati ma il tuo contatore Rewatch aumenterà!"
-            class="btn btn-sm btn-outline-warning text-dark fw-bold d-flex align-items-center gap-1 shadow-sm">
+            class="btn btn-sm btn-outline-warning fw-bold d-flex align-items-center gap-1 shadow-sm">
             🔄 Ricomincia Anime (Rewatch)
         </button>
         @endif

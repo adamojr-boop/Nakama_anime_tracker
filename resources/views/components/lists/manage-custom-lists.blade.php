@@ -2,7 +2,7 @@
     <div class="row">
         <!-- COLONNA CREAZIONE LISTA -->
         <div class="col-md-4 mb-4">
-            <div class="card card-body shadow-sm border-0 bg-white">
+            <div class="card card-body shadow-sm border-0">
                 <h5 class="fw-bold mb-3 text-secondary">✨ Nuova Lista Tematica</h5>
 
                 @if (session()->has('message'))
@@ -42,20 +42,20 @@
                 @php $isCurrent = $selectedListId === $list->id; @endphp
                 <div class="col-12">
                     <!-- Card Cliccabile grazie a wire:click="selectList" e cursore pointer -->
-                    <div class="card shadow-sm border-0 bg-white p-3 cursor-pointer transition-all {{ $isCurrent ? 'border-start border-primary border-4 shadow' : '' }}"
+                    <div class="card shadow-sm border-0 p-3 cursor-pointer transition-all {{ $isCurrent ? 'border-start border-primary border-4 shadow' : '' }}"
                         wire:click="selectList({{ $list->id }})"
                         style="cursor: pointer;">
 
                         <div class="d-flex justify-content-between align-items-start">
                             <div class="w-100">
                                 <div class="d-flex align-items-center gap-2 mb-1">
-                                    <h5 class="fw-bold mb-0 text-dark">
+                                    <h5 class="fw-bold mb-0">
                                         {{ $list->type === 'wishlist' ? '📌 ' . $list->name : '📁 ' . $list->name }}
                                     </h5>
                                     <!-- Ferma la propagazione del clic sul badge privacy per non attivare l'espansione della card -->
                                     <div wire:click.stop>
                                         @if($list->type === 'wishlist')
-                                        <span class="badge bg-light text-secondary border small">Sistema</span>
+                                        <span class="badge bg-body-secondary text-secondary border small">Sistema</span>
                                         @else
                                         <button wire:click="togglePrivacy({{ $list->id }})" class="badge border-0 {{ $list->is_public ? 'bg-success text-white' : 'bg-secondary text-white' }}">
                                             {{ $list->is_public ? '🌐 Pubblica' : '🔒 Privata' }}
@@ -90,8 +90,8 @@
                             <div class="d-flex flex-wrap gap-3">
                                 @forelse($selectedListAnime as $anime)
                                 <!-- Piccola card compatta per ogni anime salvato -->
-                                <div class="card border-0 bg-light p-2 text-center shadow-sm position-relative" style="width: 120px;">
-                                    <a href="{{ route('anime.show', $anime['mal_id']) }}" class="text-decoration-none text-dark d-block h-100">
+                                <div class="card border-0 bg-body-secondary p-2 text-center shadow-sm position-relative" style="width: 120px;">
+                                    <a href="{{ route('anime.show', $anime['mal_id']) }}" class="text-decoration-none d-block h-100">
                                         <img src="{{ $anime['image'] }}" class="img-fluid rounded mb-2 shadow-sm" style="height: 140px; object-fit: cover; width: 100%;">
                                         <h6 class="fw-bold small text-truncate mb-0" style="font-size: 0.8rem;" title="{{ $anime['title'] }}">
                                             {{ $anime['title'] }}

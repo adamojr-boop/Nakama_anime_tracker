@@ -13,7 +13,7 @@ default => 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)', // Cyberpunk / D
 // Gestione Avatar
 $avatarUrl = $profile && $profile->avatar
 ? asset('storage/' . $profile->avatar)
-: 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=0d6efd&color=fff';
+: 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=6c5ce7&color=fff';
 
 // Mappatura Visiva Bordi Avatar
 $frameStyle = match($profile->avatar_frame ?? 'default') {
@@ -28,7 +28,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
 
 <div class="container py-4">
     <!-- HEADER PROFILO -->
-    <div class="card bg-dark text-white border-0 shadow-lg overflow-hidden mb-4 rounded-4">
+    <div class="card border-0 shadow-lg overflow-hidden mb-4 rounded-4">
         <div style="height: 220px; background: {{ $bannerUrl ? "url('{$bannerUrl}') center/cover no-repeat" : $patternClass }}; position: relative;">
             @if(auth()->id() === $user->id)
             <a href="{{ route('profile.edit') }}" class="btn btn-sm btn-dark bg-opacity-75 text-white position-absolute top-0 end-0 m-3 shadow border-secondary">
@@ -51,19 +51,19 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
                 <div class="ms-md-4 mt-3 mt-md-0 text-center text-md-start flex-grow-1">
                     <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
                         <div>
-                            <h2 class="fw-bold mb-0 text-white">{{ $user->name }}</h2>
+                            <h2 class="fw-bold mb-0">{{ $user->name }}</h2>
                             <span class="text-muted small">
                                 Iscritto dal {{ $user->created_at->format('M Y') }}
                             </span>
 
                             <!-- CONTATORI FOLLOWERS / FOLLOWING (CLICCABILI) -->
                             <div class="d-flex align-items-center gap-3 mt-2 justify-content-center justify-content-md-start">
-                                <span wire:click="openFollowModal('followers')" class="small text-light-50" style="cursor: pointer;">
-                                    <strong class="text-white">{{ $followersCount }}</strong> Follower
+                                <span wire:click="openFollowModal('followers')" class="small text-body-secondary" style="cursor: pointer;">
+                                    <strong class="text-body">{{ $followersCount }}</strong> Follower
                                 </span>
                                 <span class="text-muted">•</span>
-                                <span wire:click="openFollowModal('following')" class="small text-light-50" style="cursor: pointer;">
-                                    <strong class="text-white">{{ $followingCount }}</strong> Seguiti
+                                <span wire:click="openFollowModal('following')" class="small text-body-secondary" style="cursor: pointer;">
+                                    <strong class="text-body">{{ $followingCount }}</strong> Seguiti
                                 </span>
                             </div>
                         </div>
@@ -89,7 +89,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
             <livewire:user-affinity-badge :profileUserId="$user->id" />
 
             <div class="my-3">
-                <p class="card-text text-light-50 mb-0" style="max-width: 700px; line-height: 1.6;">
+                <p class="card-text text-body-secondary mb-0" style="max-width: 700px; line-height: 1.6;">
                     {{ $profile->bio ?? 'Nessuna biografia aggiunta.' }}
                 </p>
             </div>
@@ -114,11 +114,11 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
     </div>
 
     <!-- VETRINA DEI PREFERITI -->
-    <div x-data="{ open: true }" class="card bg-dark text-white border-secondary shadow-sm mb-4 rounded-4 overflow-hidden">
-        <div class="card-header bg-dark border-0 d-flex align-items-center justify-content-between p-3">
+    <div x-data="{ open: true }" class="card border-secondary shadow-sm mb-4 rounded-4 overflow-hidden">
+        <div class="card-header bg-transparent border-0 d-flex align-items-center justify-content-between p-3">
             <div class="d-flex align-items-center gap-2 cursor-pointer" @click="open = !open">
                 <span class="fs-5">⭐</span>
-                <h6 class="fw-bold mb-0 text-white">Vetrina dei Preferiti</h6>
+                <h6 class="fw-bold mb-0">Vetrina dei Preferiti</h6>
                 <span class="badge bg-secondary bg-opacity-25 ms-1" x-text="open ? '▲' : '▼'" style="font-size: 10px;"></span>
             </div>
 
@@ -170,7 +170,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
 </div>
 
 <!-- TAB NAVIGATION & CONTENUTI -->
-<div class="card bg-dark text-white border-secondary shadow-sm rounded-4">
+<div class="card border-secondary shadow-sm rounded-4">
     <div class="card-header border-secondary bg-transparent p-3">
         <ul class="nav nav-pills card-header-pills gap-2">
             <li class="nav-item">
@@ -293,7 +293,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
 
         <!-- TAB 3: BADGE -->
         @if($activeTab === 'badges')
-        <h5 class="fw-bold mb-3 text-white">🏆 Bacheca Badge Sbloccati</h5>
+        <h5 class="fw-bold mb-3">🏆 Bacheca Badge Sbloccati</h5>
         <div class="row g-3">
             @forelse($badges ?? [] as $badge)
             <div class="col-md-6">
@@ -310,7 +310,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
                             <span class="badge bg-warning text-dark fw-bold fs-xs">✨ Sbloccato</span>
                             @endif
                         </div>
-                        <p class="small mb-0 {{ $badge['unlocked'] ? 'text-light-50' : 'text-secondary' }}">
+                        <p class="small mb-0 {{ $badge['unlocked'] ? 'text-white-50' : 'text-secondary' }}">
                             {{ $badge['description'] }}
                         </p>
                     </div>
@@ -332,7 +332,7 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
 @if($showFollowModal)
 <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.7);" id="followModal">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content bg-dark text-white border-secondary rounded-4 shadow-lg">
+        <div class="modal-content border-secondary rounded-4 shadow-lg">
             <div class="modal-header border-secondary">
                 <h5 class="modal-title fw-bold">
                     {{ $followModalType === 'followers' ? '👥 Follower' : '👤 Utenti Seguiti' }}
@@ -346,16 +346,16 @@ $socials = is_array($profile->social_links ?? null) ? array_filter($profile->soc
                     @php
                     $userAvatar = $modalUser->profile && $modalUser->profile->avatar
                     ? asset('storage/' . $modalUser->profile->avatar)
-                    : 'https://ui-avatars.com/api/?name=' . urlencode($modalUser->name) . '&background=0d6efd&color=fff';
+                    : 'https://ui-avatars.com/api/?name=' . urlencode($modalUser->name) . '&background=6c5ce7&color=fff';
 
                     $isFollowingModalUser = auth()->check() && auth()->user()->isFollowing($modalUser);
                     @endphp
 
                     <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-secondary bg-opacity-10 border border-secondary border-opacity-25">
-                        <a href="{{ route('profile.user', $modalUser->id) }}" class="d-flex align-items-center gap-3 text-decoration-none text-white">
+                        <a href="{{ route('profile.user', $modalUser->id) }}" class="d-flex align-items-center gap-3 text-decoration-none">
                             <img src="{{ $userAvatar }}" class="rounded-circle" style="width: 42px; height: 42px; object-fit: cover;">
                             <div>
-                                <h6 class="fw-bold mb-0 text-white fs-6">{{ $modalUser->name }}</h6>
+                                <h6 class="fw-bold mb-0 fs-6">{{ $modalUser->name }}</h6>
                             </div>
                         </a>
 

@@ -4,6 +4,118 @@
     pointer-events: none;
 }
 
-.navbar-collapse.collapse.show {
-    visibility: visible;
+/* ==========================================================================
+   Nakama color system (Bootstrap 5.3 color-mode variables)
+   ========================================================================== */
+
+:root,
+[data-bs-theme="light"] {
+    --bs-primary: #6c5ce7;
+    --bs-primary-rgb: 108, 92, 231;
+    --bs-link-color: var(--bs-primary);
+    --bs-link-color-rgb: var(--bs-primary-rgb);
+    --bs-link-hover-color: #564bc2;
+    --bs-link-hover-color-rgb: 86, 75, 194;
+
+    --bs-body-bg: #f6f5fb;
+    --bs-body-bg-rgb: 246, 245, 251;
+    --bs-secondary-bg: #ececf7;
+    --bs-tertiary-bg: #ffffff;
+    --bs-border-color: #e3e0f2;
+}
+
+[data-bs-theme="dark"] {
+    --bs-primary: #8b7bff;
+    --bs-primary-rgb: 139, 123, 255;
+    --bs-link-color: var(--bs-primary);
+    --bs-link-color-rgb: var(--bs-primary-rgb);
+    --bs-link-hover-color: #a89bff;
+    --bs-link-hover-color-rgb: 168, 155, 255;
+
+    --bs-body-bg: #121218;
+    --bs-body-bg-rgb: 18, 18, 24;
+    --bs-secondary-bg: #1b1c24;
+    --bs-tertiary-bg: #1f2029;
+    --bs-border-color: #2b2c38;
+}
+
+/* Bootstrap's precompiled CSS ties `.btn-primary` to a fixed hex, not the
+   `--bs-primary` runtime variable, so it must be re-pointed manually. */
+.btn-primary {
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--bs-primary) 85%, black);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--bs-primary) 85%, black);
+    --bs-btn-active-bg: color-mix(in srgb, var(--bs-primary) 75%, black);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--bs-primary) 75%, black);
+    --bs-btn-disabled-bg: var(--bs-primary);
+    --bs-btn-disabled-border-color: var(--bs-primary);
+    --bs-btn-focus-shadow-rgb: var(--bs-primary-rgb);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: var(--bs-primary);
+    --bs-btn-hover-border-color: var(--bs-primary);
+    --bs-btn-active-bg: var(--bs-primary);
+    --bs-btn-active-border-color: var(--bs-primary);
+    --bs-btn-focus-shadow-rgb: var(--bs-primary-rgb);
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    --bs-nav-pills-link-active-bg: var(--bs-primary);
+}
+
+.brand-font {
+    font-family: 'Agbalumo', system-ui;
+    font-size: 1.4rem;
+}
+
+/* ==========================================================================
+   Navigation shell (topbar + sidebar)
+   ========================================================================== */
+
+.btn-icon {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--bs-body-color);
+    flex-shrink: 0;
+}
+
+.btn-icon:hover {
+    background: var(--bs-secondary-bg);
+}
+
+#appSidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .65rem .9rem;
+    border-radius: .75rem;
+    color: var(--bs-body-color);
+}
+
+#appSidebar .nav-link i {
+    font-size: 1.15rem;
+    width: 1.4rem;
+    text-align: center;
+}
+
+#appSidebar .nav-link.active {
+    background: rgba(var(--bs-primary-rgb), .12);
+    color: var(--bs-primary);
+    font-weight: 600;
+}
+
+#appSidebar .nav-link:hover:not(.active) {
+    background: var(--bs-secondary-bg);
 }

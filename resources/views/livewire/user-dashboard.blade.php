@@ -13,7 +13,7 @@
         <livewire:episode-countdown />
         <livewire:watch-history-calendar />
 
-        <div class="card p-3 shadow-sm border-0 bg-dark text-white mb-3">
+        <div class="card p-3 shadow-sm border-0 mb-3">
             <div class="d-flex align-items-center">
                 <div class="fs-1 me-3">🍿</div>
                 <div>
@@ -31,10 +31,10 @@
     <div class="row mt-4">
         <div class="col-lg-4">
             <h3 class="fw-bold mb-3">🏆 Top Giocatori</h3>
-            <div class="card bg-dark text-white border-secondary p-3 shadow-sm">
+            <div class="card border-secondary p-3 shadow-sm">
                 <ul class="list-group list-group-flush bg-transparent">
                     @forelse($leaderboard as $entry)
-                    <li class="list-group-item bg-transparent text-white d-flex justify-content-between align-items-center border-secondary px-0">
+                    <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center border-secondary px-0">
                         <div>
                             <span class="fw-bold me-2">#{{ $loop->iteration }}</span>
                             {{ $entry['name'] ?? 'Utente' }}
@@ -42,7 +42,7 @@
                         <span class="badge bg-warning text-dark fs-6">{{ number_format((int) ($entry['points'] ?? $entry['total_score'] ?? 0)) }} PTS</span>
                     </li>
                     @empty
-                    <li class="list-group-item bg-transparent text-white border-secondary px-0">Nessun utente in classifica.</li>
+                    <li class="list-group-item bg-transparent border-secondary px-0">Nessun utente in classifica.</li>
                     @endforelse
                 </ul>
             </div>

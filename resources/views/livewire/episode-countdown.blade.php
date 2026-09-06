@@ -1,4 +1,4 @@
-<div class="card bg-dark text-white border-secondary p-3 shadow-sm mb-4">
+<div class="card border-secondary p-3 shadow-sm mb-4">
     @if ($episode)
     {{-- STATO 1: Episodio Rilasciato (Badge Disponibile) --}}
     @if ($episode->status === 'released')
@@ -6,7 +6,7 @@
         <span class="badge bg-success text-white uppercase px-3 py-2 fs-6 mb-2">
             ✓ EPISODIO DISPONIBILE
         </span>
-        <h5 class="fw-bold text-white mb-1">{{ $episode->title }}</h5>
+        <h5 class="fw-bold mb-1">{{ $episode->title }}</h5>
         <p class="text-muted small mb-0">Episodio {{ $episode->episode_number }} rilasciato ufficialmente.</p>
     </div>
 
@@ -21,7 +21,7 @@
                     <span class="badge bg-danger text-white uppercase mb-1">
                         In Arrivo • Ep. {{ $episode->episode_number }}
                     </span>
-                    <h5 class="fw-bold text-white mb-0 mt-1">
+                    <h5 class="fw-bold mb-0 mt-1">
                         {{ $episode->title }}
                     </h5>
                 </div>
@@ -29,19 +29,19 @@
                 <div class="row g-2 text-center">
                     <div class="col-3">
                         <div class="bg-secondary bg-opacity-25 p-2 rounded">
-                            <div class="fs-4 fw-bold text-white" x-text="days">00</div>
+                            <div class="fs-4 fw-bold" x-text="days">00</div>
                             <div class="text-uppercase text-muted" style="font-size: 10px;">Giorni</div>
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="bg-secondary bg-opacity-25 p-2 rounded">
-                            <div class="fs-4 fw-bold text-white" x-text="hours">00</div>
+                            <div class="fs-4 fw-bold" x-text="hours">00</div>
                             <div class="text-uppercase text-muted" style="font-size: 10px;">Ore</div>
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="bg-secondary bg-opacity-25 p-2 rounded">
-                            <div class="fs-4 fw-bold text-white" x-text="minutes">00</div>
+                            <div class="fs-4 fw-bold" x-text="minutes">00</div>
                             <div class="text-uppercase text-muted" style="font-size: 10px;">Minuti</div>
                         </div>
                     </div>

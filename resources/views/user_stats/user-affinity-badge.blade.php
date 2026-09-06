@@ -1,6 +1,6 @@
 <div>
     @if(!is_null($affinityPercentage))
-    <div class="card bg-dark text-white border-secondary shadow-sm p-3 mb-3">
+    <div class="card border-secondary shadow-sm p-3 mb-3">
         <div class="d-flex align-items-center justify-content-between">
             <div>
                 <h6 class="mb-0 text-muted small uppercase">Compatibilità Nakama</h6>

@@ -4,7 +4,7 @@
     @if(count($providers))
         <div class="d-flex flex-wrap gap-2">
             @foreach($providers as $provider)
-                <a href="{{ $provider['url'] }}" target="_blank" rel="noopener noreferrer" class="badge bg-light text-dark border d-inline-flex align-items-center gap-2 px-2 py-2 text-decoration-none">
+                <a href="{{ $provider['url'] }}" target="_blank" rel="noopener noreferrer" class="badge bg-body-secondary text-body border d-inline-flex align-items-center gap-2 px-2 py-2 text-decoration-none">
                     @if($provider['logo_path'])
                         <img src="https://image.tmdb.org/t/p/w92{{ $provider['logo_path'] }}" alt="" width="24" height="24" class="rounded">
                     @endif

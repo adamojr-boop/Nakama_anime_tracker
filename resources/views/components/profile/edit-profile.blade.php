@@ -33,7 +33,7 @@ $avatarUrl = null;
 } elseif (auth()->user()->profile && auth()->user()->profile->avatar) {
 $avatarUrl = asset('storage/' . auth()->user()->profile->avatar);
 } else {
-$avatarUrl = 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0d6efd&color=fff';
+$avatarUrl = 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=6c5ce7&color=fff';
 }
 
 // Stile Bordo Avatar
@@ -48,10 +48,10 @@ default => 'border: 3px solid #ffffff;',
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card bg-dark text-white shadow border-secondary">
+            <div class="card shadow border-secondary">
                 <div class="card-header border-secondary d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 fw-bold">⚙️ Personalizza Profilo</h4>
-                    <a href="{{ route('profile.show') }}" class="btn btn-outline-light btn-sm">Vedi Profilo</a>
+                    <a href="{{ route('profile.show') }}" class="btn btn-outline-secondary btn-sm">Vedi Profilo</a>
                 </div>
 
                 <div class="card-body">
@@ -77,12 +77,12 @@ default => 'border: 3px solid #ffffff;',
 
                     <form wire:submit.prevent="save">
                         <div class="mb-3">
-                            <label for="name" class="form-label text-white fw-bold">Username</label>
+                            <label for="name" class="form-label fw-bold">Username</label>
                             <input
                                 type="text"
                                 id="name"
                                 wire:model="name"
-                                class="form-control bg-dark text-white border-secondary @error('name') is-invalid @enderror"
+                                class="form-control @error('name') is-invalid @enderror"
                                 placeholder="Il tuo nome">
                             @error('name')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -92,7 +92,7 @@ default => 'border: 3px solid #ffffff;',
                         <!-- BANNER & PATTERN -->
                         <div class="mb-4 p-3 rounded bg-secondary bg-opacity-10 border border-secondary border-opacity-25">
                             <label class="form-label fw-bold">Banner Custom</label>
-                            <input type="file" wire:model="banner" class="form-control bg-secondary text-white border-0 mb-2" accept="image/*">
+                            <input type="file" wire:model="banner" class="form-control mb-2" accept="image/*">
                             <div wire:loading wire:target="banner" class="text-info small mb-2">Caricamento anteprima banner...</div>
                             @error('banner') <span class="text-danger small d-block mb-2">{{ $message }}</span> @enderror
 
@@ -104,10 +104,10 @@ default => 'border: 3px solid #ffffff;',
 
                             <hr class="border-secondary opacity-25 my-3">
 
-                            <label class="form-label fw-bold mb-1">Pattern Sfの内</label>
-                            <p class="small text-white mb-2">Se non hai caricato un'immagine personalizzata, verrà mostrato il pattern scelto qui sotto:</p>
+                            <label class="form-label fw-bold mb-1">Pattern Sfondo</label>
+                            <p class="small text-muted mb-2">Se non hai caricato un'immagine personalizzata, verrà mostrato il pattern scelto qui sotto:</p>
 
-                            <select wire:model.live="bannerPattern" class="form-select bg-secondary text-white border-0">
+                            <select wire:model.live="bannerPattern" class="form-select">
                                 <option value="pattern-1">🌆 Cyberpunk Tokyo</option>
                                 <option value="pattern-2">🌸 Cherry Blossom</option>
                                 <option value="pattern-3">🔥 Shonen Aura</option>
@@ -119,13 +119,13 @@ default => 'border: 3px solid #ffffff;',
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Avatar Profilo</label>
-                                <input type="file" wire:model="avatar" class="form-control bg-secondary text-white border-0 mb-2" accept="image/*">
+                                <input type="file" wire:model="avatar" class="form-control mb-2" accept="image/*">
                                 <div wire:loading wire:target="avatar" class="text-info small mb-2">Caricamento anteprima avatar...</div>
                                 @error('avatar') <span class="text-danger small d-block">{{ $message }}</span> @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Bordo / Cornice Avatar</label>
-                                <select wire:model.live="avatarFrame" class="form-select bg-secondary text-white border-0">
+                                <select wire:model.live="avatarFrame" class="form-select">
                                     <option value="default">⚪ Standard (Nessun Bordo)</option>
                                     <option value="gold">🥇 Gold Champion</option>
                                     <option value="neon">⚡ Neon Cyber</option>
@@ -136,7 +136,7 @@ default => 'border: 3px solid #ffffff;',
                         <!-- BIOGRAFIA -->
                         <div class="mb-4">
                             <label class="form-label fw-bold">Biografia</label>
-                            <textarea wire:model="bio" rows="3" class="form-control bg-secondary text-white border-0" placeholder="Scrivi qualcosa su di te..."></textarea>
+                            <textarea wire:model="bio" rows="3" class="form-control" placeholder="Scrivi qualcosa su di te..."></textarea>
                             @error('bio') <span class="text-danger small d-block">{{ $message }}</span> @enderror
                         </div>
 
@@ -145,19 +145,19 @@ default => 'border: 3px solid #ffffff;',
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
                                 <label class="form-label small">Discord (Username)</label>
-                                <input type="text" wire:model="discord" class="form-control bg-secondary text-white border-0" placeholder="username#0000">
+                                <input type="text" wire:model="discord" class="form-control" placeholder="username#0000">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">X / Twitter</label>
-                                <input type="text" wire:model="twitter" class="form-control bg-secondary text-white border-0" placeholder="@username">
+                                <input type="text" wire:model="twitter" class="form-control" placeholder="@username">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">Instagram</label>
-                                <input type="text" wire:model="instagram" class="form-control bg-secondary text-white border-0" placeholder="@username">
+                                <input type="text" wire:model="instagram" class="form-control" placeholder="@username">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">MyAnimeList / AniList</label>
-                                <input type="text" wire:model="mal" class="form-control bg-secondary text-white border-0" placeholder="Link profilo">
+                                <input type="text" wire:model="mal" class="form-control" placeholder="Link profilo">
                             </div>
                         </div>
 

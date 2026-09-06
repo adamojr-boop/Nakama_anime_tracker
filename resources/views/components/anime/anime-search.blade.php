@@ -1,7 +1,7 @@
 <div class="position-relative w-100 m-auto" style="max-width: 500px;">
     <!-- Input di ricerca -->
     <div class="input-group">
-        <span class="input-group-text bg-white border-end-0">🔍</span>
+        <span class="input-group-text border-end-0">🔍</span>
         <input
             wire:model.live.debounce.300ms="searchQuery"
             type="text"
@@ -9,7 +9,7 @@
             placeholder="Cerca un anime...">
     </div>
     <!-- Caricamento visivo asincrono -->
-    <div wire:loading class="position-absolute w-100 bg-white shadow-sm p-2 text-center text-muted" style="z-index: 1000; top: 100%;">
+    <div wire:loading class="position-absolute w-100 bg-body shadow-sm p-2 text-center text-muted" style="z-index: 1000; top: 100%;">
         <div class="spinner-border spinner-border-sm text-primary" role="status"></div> Cercando su Nakama...
     </div>
     <!-- Lista dei Risultati (Mostrata solo se ci sono elementi nell'array) -->
@@ -36,7 +36,7 @@
     @endif
 
     @if(empty($results) && strlen($searchQuery) >= 3)
-    <div wire:loading.remove class="position-absolute w-100 bg-white shadow-sm p-3 text-center text-muted mt-1" style="z-index: 1000; top: 100%;">
+    <div wire:loading.remove class="position-absolute w-100 bg-body shadow-sm p-3 text-center text-muted mt-1" style="z-index: 1000; top: 100%;">
         Nessun risultato trovato o rallentamento del server. Riprova tra un istante.
     </div>
     @endif

@@ -8,7 +8,7 @@
     <!-- Modal Bootstrap -->
     <div wire:ignore.self class="modal fade" id="timeRecommendationModal" tabindex="-1" aria-labelledby="timeRecommendationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark text-white border-secondary shadow-lg rounded-4">
+            <div class="modal-content border-secondary shadow-lg rounded-4">
                 <div class="modal-header border-secondary">
                     <h5 class="modal-title fw-bold text-warning d-flex align-items-center gap-2" id="timeRecommendationModalLabel">
                         ⏱️ Consiglio Lampo
@@ -68,12 +68,12 @@
                                 <h6 class="fw-bold mb-1">
                                     <a href="https://myanimelist.net/anime/{{ $recommendation['mal_id'] }}"
                                         target="_blank"
-                                        class="text-white text-decoration-none hover-warning">
+                                        class="text-decoration-none hover-warning">
                                         {{ $recommendation['title'] }} ↗
                                     </a>
                                 </h6>
 
-                                <p class="small text-light mb-1">
+                                <p class="small text-body-secondary mb-1">
                                     👉 Ti consigliamo di guardare
                                     <strong class="text-warning">
                                         @if($recommendation['episodes_to_watch'] == 1)

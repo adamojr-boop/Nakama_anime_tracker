@@ -11,7 +11,7 @@
         @php
         $avatar = $searchUser->profile && $searchUser->profile->avatar
         ? asset('storage/' . $searchUser->profile->avatar)
-        : 'https://ui-avatars.com/api/?name=' . urlencode($searchUser->name) . '&background=0d6efd&color=fff';
+        : 'https://ui-avatars.com/api/?name=' . urlencode($searchUser->name) . '&background=6c5ce7&color=fff';
         $username = $searchUser->profile->username ?? \Illuminate\Support\Str::slug($searchUser->name);
         @endphp
 

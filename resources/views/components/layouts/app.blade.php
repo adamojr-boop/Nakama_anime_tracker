@@ -16,9 +16,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Cherry+Bomb+One&display=swap" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    @vite('resources/css/app.css')
+    <script>
+        // Applied before first paint to avoid a light/dark flash on load.
+        (function () {
+            var stored = localStorage.getItem('nakama-theme');
+            var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-bs-theme', theme);
+        })();
+    </script>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @livewireStyles
 </head>
@@ -26,18 +33,13 @@
 <body class="d-flex flex-column min-vh-100">
 
     <x-navbar />
+    <x-sidebar />
 
     <main class="flex-grow-1">
         {{ $slot ?? '' }}
     </main>
 
     <x-footer />
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-    <script>
-        AOS.init();
-    </script>
 
     @livewireScripts
 </body>

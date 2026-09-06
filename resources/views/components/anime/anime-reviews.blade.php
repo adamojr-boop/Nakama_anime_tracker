@@ -52,7 +52,7 @@
     <div class="reviews-list">
         @forelse($reviews as $review)
         @php($isRevealed = in_array($review->id, $revealedReviewIds, true))
-        <div class="card mb-3 shadow-sm border-0 bg-white">
+        <div class="card mb-3 shadow-sm border-0">
             <div class="card-body p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <div>

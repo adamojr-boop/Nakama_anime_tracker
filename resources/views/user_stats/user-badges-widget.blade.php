@@ -17,7 +17,7 @@
         @endphp
 
         <div class="col">
-            <div class="card h-100 border-0 p-3 shadow-sm rounded-3 text-center position-relative transition-all {{ $isUnlocked ? 'bg-light border-start border-warning border-4' : 'bg-white opacity-50 grayscale' }}"
+            <div class="card h-100 border-0 p-3 shadow-sm rounded-3 text-center position-relative transition-all {{ $isUnlocked ? 'bg-body-secondary border-start border-warning border-4' : 'bg-body-secondary opacity-50 grayscale' }}"
                 style="transition: transform 0.2s;"
                 onmouseover="this.style.transform='scale(1.02)'"
                 onmouseout="this.style.transform='scale(1)'">
@@ -26,7 +26,7 @@
                     {{ $badge->icon }}
                 </div>
                 <!-- Nome Trofeo -->
-                <h6 class="fw-bold mb-1 {{ $isUnlocked ? 'text-dark' : 'text-muted' }}">
+                <h6 class="fw-bold mb-1 {{ $isUnlocked ? '' : 'text-muted' }}">
                     {{ $badge->name }}
                 </h6>
                 <!-- Descrizione -->

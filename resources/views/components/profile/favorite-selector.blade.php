@@ -6,7 +6,7 @@
     <!-- Modale Mobile Friendly -->
     <div class="modal d-block fade show" tabindex="-1" style="z-index: 1055;">
         <div class="modal-dialog modal-dialog-centered px-2">
-            <div class="modal-content bg-dark text-white border-secondary shadow-lg">
+            <div class="modal-content border-secondary shadow-lg">
 
                 <div class="modal-header border-secondary p-3">
                     <h6 class="modal-title fw-bold">⭐ Vetrina Preferiti</h6>
@@ -32,7 +32,7 @@
                     <input
                         type="text"
                         wire:model.live.debounce.300ms="search"
-                        class="form-control form-control-sm bg-secondary bg-opacity-25 border-secondary text-white mb-3"
+                        class="form-control form-control-sm mb-3"
                         placeholder="Scrivi il titolo dell'anime...">
 
                     <!-- Risultati della Ricerca -->
@@ -41,7 +41,7 @@
                         <button
                             type="button"
                             wire:click="assignAnimeToSlot({{ $anime->id }})"
-                            class="list-group-item list-group-item-action bg-dark text-white border-secondary d-flex align-items-center gap-2 p-2">
+                            class="list-group-item list-group-item-action d-flex align-items-center gap-2 p-2">
                             <img src="{{ $anime->image_url ?? $anime->image }}" class="rounded object-fit-cover" style="width: 35px; height: 50px;">
                             <div class="text-start text-truncate flex-grow-1">
                                 <div class="fw-bold small text-truncate">{{ $anime->title }}</div>

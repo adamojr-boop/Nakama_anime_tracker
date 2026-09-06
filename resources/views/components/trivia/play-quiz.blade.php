@@ -2,7 +2,7 @@
     @if(!$isFinished && isset($questions[$currentIndex]))
     @php $currentQuestion = $questions[$currentIndex]; @endphp
 
-    <div class="card shadow border-0 bg-dark text-white p-4">
+    <div class="card shadow border-0 p-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="badge bg-primary fs-6">Domanda {{ $currentIndex + 1 }} di {{ $questions->count() }}</span>
             <span class="badge bg-warning text-dark fs-6">Punti: {{ $score }}</span>
@@ -15,8 +15,8 @@
             <div class="col-md-6">
                 <button
                     wire:click="selectOption({{ $index }})"
-                    class="btn w-100 p-3 text-start border-secondary text-white 
-                            {{ $selectedOption === $index ? 'btn-primary active' : 'btn-outline-light' }}">
+                    class="btn w-100 p-3 text-start
+                            {{ $selectedOption === $index ? 'btn-primary active' : 'btn-outline-secondary' }}">
                     <strong>{{ chr(65 + $index) }}.</strong> {{ $option }}
                 </button>
             </div>
@@ -34,7 +34,7 @@
     </div>
     @else
     <!-- Schermata Risultati e Sblocco Trofei -->
-    <div class="card shadow border-0 bg-dark text-white text-center p-5">
+    <div class="card shadow border-0 text-center p-5">
         <div class="fs-1 mb-2">🎉</div>
         <h2 class="fw-bold">Quiz Completato!</h2>
         <p class="text-muted">Ecco i dettagli del tuo tentativo:</p>

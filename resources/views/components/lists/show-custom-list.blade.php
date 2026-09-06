@@ -37,7 +37,7 @@
                 <div class="row g-3">
                     @foreach($animeList as $anime)
                     <div class="col-6 col-md-3 col-lg-2">
-                        <div class="card border-0 bg-light h-100 shadow-sm">
+                        <div class="card border-0 bg-body-secondary h-100 shadow-sm">
                             <img src="{{ $anime['image'] }}" class="card-img-top" style="height: 220px; object-fit: cover;">
                             <div class="card-body p-2 text-center d-flex flex-column gap-2">
                                 <h6 class="small fw-bold text-truncate mb-0" title="{{ $anime['title'] }}">
